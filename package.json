@@ -1,0 +1,30 @@
+{
+  "name": "nodejs_app",
+  "version": "1.0.0",
+  "description": "node app with express",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rafaelmuto/nodejs_app.git"
+  },
+  "keywords": [
+    "nodejs",
+    "express"
+  ],
+  "author": "rafaelmuto",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rafaelmuto/nodejs_app/issues"
+  },
+  "homepage": "https://github.com/rafaelmuto/nodejs_app#readme",
+  "devDependencies": {
+    "nodemon": "^1.18.9"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}
