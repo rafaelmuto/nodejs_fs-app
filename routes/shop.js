@@ -1,11 +1,13 @@
+// core module to construct paths in node.js:
+const path = require('path');
+
 const express = require('express');
 
 // create a router obj:
 const router = express.Router();
 
 router.get('/', (req, res, nxt) => {
-    console.log('hello world route reached!');
-    res.send('<h1> Hello World! </h1>');
+    res.sendFile(path.join(__dirname, '../', 'views', 'shop.html'));
 });
 
 // export router obj:
