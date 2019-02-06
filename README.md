@@ -1,2 +1,4 @@
-# nodejs_app
-node.js application with express.js
+# nodejs_fs-app
+this is a fullstack application for a webstore
+running on node.js with express.js
+
