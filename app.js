@@ -11,6 +11,7 @@ const shopRoutes = require('./routes/r_shop.js');
 // creating the server(?) obj with the express() function, the function returns an obj:
 const app = express();
 
+
 // setting up the view engine (pug):
 app.set('view engine', 'pug');
 // setting up the views folder, /views is the default thouth:
@@ -34,7 +35,9 @@ app.use(shopRoutes);
 
 app.use((req, res, nxt) => {
     // res.status(404).sendFile(path.join(__dirname, 'views', '404.html'));
-    res.status(404).render('404');
+    res.status(404).render('404', {
+        pageTitle: 'Err404 Page Not Found'
+    });
 });
 
 // starting the server at port 3000:
