@@ -4,9 +4,9 @@ block styles
     link(rel="stylesheet", href="/css/products.css")
 block content
     main
-        if prods.length > 0
+        if products.length > 0
             div.grid
-                each product in prods
+                each product in products
                     article.card.product-item
                         header.card__header
                             h1.product__title #{product.title}

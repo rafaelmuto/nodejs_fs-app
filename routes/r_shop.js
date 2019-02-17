@@ -1,29 +1,15 @@
 // core module to construct paths in node.js:
 const path = require('path');
 
-
-const rootDir = require('../util/rootPath.js');
-const adminData = require('./r_admin.js');
-
-
 const express = require('express');
 
-// create a router obj:
+// creating router obj with express.Router() function, the function returns an obj:
 const router = express.Router();
 
-router.get('/', (req, res, nxt) => {
+// importing controllers:
+const productsController = require('../controllers/c_products.js');
 
-    // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
-    const products = adminData.products;
-
-    res.render('shop', {
-        pageTitle: 'Shop',
-        path: '/',
-        prods: products
-    });
-
-    console.log('>>>r_shop.js', adminData.products);
-});
+router.get('/', productsController.getProducts);
 
 // export router obj:
 module.exports = router;
