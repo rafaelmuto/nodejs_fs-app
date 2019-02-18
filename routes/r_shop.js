@@ -7,9 +7,12 @@ const express = require('express');
 const router = express.Router();
 
 // importing controllers:
-const productsController = require('../controllers/c_products.js');
+const shopController = require('../controllers/c_shop.js');
 
-router.get('/', productsController.getProducts);
+router.get('/', shopController.getIndex);
+router.get('/products', shopController.getProducts);
+router.get('/cart', shopController.getCart);
+router.get('/checkout', shopController.getCheckout);
 
 // export router obj:
 module.exports = router;
