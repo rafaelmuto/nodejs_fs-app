@@ -35,4 +35,11 @@ exports.getCheckout = (req, res, nxt) => {
         pageTitle: 'Checkout',
         path: '/checkout'
     });
+};
+
+exports.getOrders = (req, res, nxt) => {
+    res.render('shop/orders', {
+        pageTitle: 'Your Orders',
+        path: '/orders'
+    })
 }

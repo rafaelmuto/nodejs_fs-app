@@ -51,15 +51,52 @@ main {
   color: #ffeb3b;
 }
 
+/* PRODUCT FORM */
+
+.product-form {
+  width: 20rem;
+  max-width: 90%;
+  margin: auto;
+}
+
+.form-control {
+  margin: 1rem 0;
+}
+
+.form-control label,
+.form-control input,
+.form-control textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
+
+.form-control input,
+.form-control textarea {
+  border: 1px solid #a1a1a1;
+  font: inherit;
+  border-radius: 2px;
+}
+
+.form-control input:focus,
+.form-control textarea:focus {
+  outline-color: #00695c;
+}
+
+/* PRODUCT GRID & CARD: */
+
 .grid {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
 }
 
 .card {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
+}
+
+.product-item {
+  /* width: 20rem; */
+  max-width: 95%;
 }
 
 .card__header,
@@ -79,17 +116,36 @@ main {
 }
 
 .card__image img {
-  width: 100%;
+  max-width: 100%;
+  height: auto;
 }
 
+.product__title {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.product__price {
+  text-align: center;
+  color: #4d4d4d;
+  margin-bottom: 0.5rem;
+}
+
+.product__description {
+  text-align: center;
+}
+
+
 .card__actions {
-    padding: 1rem;
-    text-align: center;
+  padding: 1rem;
+  text-align: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 1fr);
 }
 
 .card__actions button,
 .card__actions a {
-    margin: 0 0.25rem;
+  margin: 0 0.25rem;
 }
 
 .btn {
@@ -99,6 +155,8 @@ main {
   background: white;
   border-radius: 3px;
   cursor: pointer;
+  text-decoration: none;
+  width: 100%;
 }
 
 .btn:hover,

@@ -19,8 +19,18 @@ exports.postAddProduct = (req, res, nxt) => {
 };
 
 exports.getAdminProducts = (req, res, nxt) => {
-    res.render('admin/products-list', {
-        pageTitle: 'Admin Products',
-        path: '/admin/products'
+    mProduct.fetchAll((products) => {
+        res.render('admin/products-list', {
+            pageTitle: 'Admin Products',
+            path: '/admin/products',
+            products: products
+        });
     });
+};
+
+exports.getEditProduct = (req, res, nxt) => {
+    res.render('admin/edit-product', {
+        pageTitle: 'Edit Product',
+        path: '/edit-product'
+    })
 };

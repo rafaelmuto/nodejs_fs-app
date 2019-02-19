@@ -11,11 +11,10 @@ const adminController = require('../controllers/c_admin');
 
 // /admin/add-product => GET
 router.get('/add-product', adminController.getAddProduct);
-
 // /admin/add-product => POST
 router.post('/add-product', adminController.postAddProduct);
-
 router.get('/products', adminController.getAdminProducts);
+router.get('/edit-product', adminController.getEditProduct);
 
 // exporting the router obj:
 module.exports = router;

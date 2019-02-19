@@ -1,7 +1,6 @@
 extend ../layouts/main-layout.pug
 
 block styles
-    link(rel="stylesheet", href="/css/products.css")
 block content
     main
         if products.length > 0
@@ -16,7 +15,7 @@ block content
                             h2.product__price R$ #{product.price}
                             p.product__description #{product.description}
                         div.card__actions
-                            button.btn Add to Cart!
+                            form(action="/add-to-cart", method="POST")
+                                button.btn Add to Cart!
         else
             h1 no products...
-                
