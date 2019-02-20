@@ -2,11 +2,12 @@
     "title": "Cadeira 101",
     "imageURL": "https://payload.cargocollective.com/1/15/505108/13324823/201711221040_MG_1308_1340_c.jpg",
     "description": "Cadeira Parametrica",
-    "price": "250"
+    "price": "250",
+    "id": "1"
 }, {
     "title": "Luminária Hikari",
     "imageURL": "https://payload.cargocollective.com/1/15/505108/12027704/_MG_5226_1000.jpg",
     "description": "Luminaria Modular",
-    "price": "150"
-
+    "price": "150",
+    "id": "2"
 }]

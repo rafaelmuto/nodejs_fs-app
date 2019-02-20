@@ -2,11 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 
-
-// importing routes:
-const adminRoutes = require('./routes/r_admin.js');
-const shopRoutes = require('./routes/r_shop.js');
-
 // creating the server(?) obj with the express() function, the function returns an obj:
 const app = express();
 
@@ -16,6 +11,10 @@ app.set('view engine', 'pug');
 // setting up the views folder, /views is the default thouth:
 app.set('views', 'views');
 
+
+// importing routes:
+const adminRoutes = require('./routes/r_admin.js');
+const shopRoutes = require('./routes/r_shop.js');
 
 // =================
 // MIDDLEWARES HERE:

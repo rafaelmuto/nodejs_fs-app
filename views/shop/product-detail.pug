@@ -1,1 +1,8 @@
 extend ../layouts/main-layout.pug
+
+block content
+    h1= product.title
+    img(src=product.imageURL)
+    h2= product.description
+    h2 R$ #{product.price}
+    h1 id # #{product.id}

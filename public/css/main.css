@@ -113,11 +113,12 @@ main {
 
 .card__image {
   width: 100%;
+  text-align: center;
 }
 
 .card__image img {
   max-width: 100%;
-  height: auto;
+  height: 25rem;
 }
 
 .product__title {
