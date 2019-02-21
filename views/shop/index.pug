@@ -15,7 +15,6 @@ block content
                             h2.product__price R$ #{product.price}
                             p.product__description #{product.description}
                         div.card__actions
-                            form(action="/add-to-cart", method="POST")
-                                button.btn Add to Cart!
+                            include ../includes/addToCart.pug
         else
             h1 no products...

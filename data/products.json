@@ -10,4 +10,10 @@
     "description": "Luminaria Modular",
     "price": "150",
     "id": "2"
+}, {
+    "title": "3D Renders",
+    "imageURL": "https://payload.cargocollective.com/1/15/505108/13382907/teste_fachadas_01_1024.png",
+    "description": "3D renders with ambiet clousion",
+    "price": "99.99",
+    "id": "3"
 }]

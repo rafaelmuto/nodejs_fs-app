@@ -1,5 +1,6 @@
-// importing Product model:
+// importing models:
 const mProduct = require('../models/m_product');
+const mCart = require('../models/m_cart');
 
 // here we exports all shop routes functions:
 
@@ -28,7 +29,7 @@ exports.getProduct = (req, res, nxt) => {
     mProduct.findById(prodId, (product) => {
         res.render('shop/product-detail', {
             pageTitle: product.title,
-            path: '/product-detail',
+            path: '/products',
             product: product
         })
     });
@@ -39,6 +40,14 @@ exports.getCart = (req, res, nxt) => {
         pageTitle: 'Your Cart',
         path: '/cart'
     });
+};
+
+exports.postCart = (req, res, nxt) => {
+    const prodId = req.body.productId;
+    mProduct.findById(prodId, (product) => {
+        mCart.addProduct(prodId, product.price);
+    })
+    res.redirect('/cart');
 };
 
 exports.getCheckout = (req, res, nxt) => {
