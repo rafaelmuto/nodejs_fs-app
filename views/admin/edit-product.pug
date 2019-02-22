@@ -2,14 +2,16 @@ extend ../layouts/main-layout.pug
 block styles
 block content
     main
-        form.product-form(action="/admin/add-product", method="POST")
+        form.product-form(action= edit?'/admin/edit-product':'/admin/add-product', method="POST")
             .form-control
                 label(for="title") Title
-                input(type="text", name="title", id="title")
+                input(type="text", name="title", id="title", value= edit?product.title:'')
                 label(for="title") ImageURL
-                input(type="text", name="imageURL", id="imageURL")
+                input(type="text", name="imageURL", id="imageURL", value= edit?product.imageURL:'')
                 label(for="title") Price
-                input(type="number", name="price", id="price", step="0.01")
+                input(type="number", name="price", id="price", step="0.01", value= edit?product.price:'')
                 label(for="title") Description
-                textarea(name="description", rows="5", id="description")
-            button.btn(type="submit") Add Product
+                textarea(name="description", rows="5", id="description") #{edit?product.description:''}
+                if edit
+                    input(name="productId", type="hidden", value=product.id)
+            button.btn(type="submit") #{edit?'Update Product':'Add Product'}
