@@ -13,8 +13,8 @@ app.set('views', 'views');
 
 
 // importing routes:
-const adminRoutes = require('./routes/r_admin.js');
-const shopRoutes = require('./routes/r_shop.js');
+const adminRoutes = require('./routes/adminRouter');
+const shopRoutes = require('./routes/shopRouter');
 
 // =================
 // MIDDLEWARES HERE:

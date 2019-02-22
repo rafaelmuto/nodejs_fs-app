@@ -1,3 +1,4 @@
+// importing core module to construct paths and file system in node.js:
 const fs = require('fs');
 const path = require('path');
 

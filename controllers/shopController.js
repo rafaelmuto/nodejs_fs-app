@@ -1,11 +1,11 @@
 // importing models:
-const mProduct = require('../models/m_product');
-const mCart = require('../models/m_cart');
+const productModel = require('../models/productModel');
+const cartModel = require('../models/cartModel');
 
 // here we exports all shop routes functions:
 
 exports.getIndex = (req, res, nxt) => {
-    mProduct.fetchAll((products) => {
+    productModel.fetchAll((products) => {
         res.render('shop/index', {
             pageTitle: 'Shop',
             path: '/',
@@ -15,7 +15,7 @@ exports.getIndex = (req, res, nxt) => {
 };
 
 exports.getProducts = (req, res, nxt) => {
-    mProduct.fetchAll((products) => {
+    productModel.fetchAll((products) => {
         res.render('shop/product-list', {
             pageTitle: 'Shop',
             path: '/products',
@@ -26,7 +26,7 @@ exports.getProducts = (req, res, nxt) => {
 
 exports.getProduct = (req, res, nxt) => {
     const prodId = req.params.productId;
-    mProduct.findById(prodId, (product) => {
+    productModel.findById(prodId, (product) => {
         res.render('shop/product-detail', {
             pageTitle: product.title,
             path: '/products',
@@ -44,8 +44,8 @@ exports.getCart = (req, res, nxt) => {
 
 exports.postCart = (req, res, nxt) => {
     const prodId = req.body.productId;
-    mProduct.findById(prodId, (product) => {
-        mCart.addProduct(prodId, product.price);
+    productModel.findById(prodId, (product) => {
+        cartModel.addProduct(prodId, product.price);
     })
     res.redirect('/cart');
 };
