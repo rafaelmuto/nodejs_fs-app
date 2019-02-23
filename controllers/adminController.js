@@ -60,3 +60,9 @@ exports.getAdminProducts = (req, res, nxt) => {
         });
     });
 };
+
+exports.postDeleteProduct = (req, res, nxt) => {
+    const prodId = req.body.productId;
+    productModel.deleteById(prodId);
+    res.redirect('/admin/products');
+};

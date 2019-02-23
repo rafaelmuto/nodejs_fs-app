@@ -2,6 +2,9 @@
 const fs = require('fs');
 const path = require('path');
 
+const cartModel = require('./cartModel');
+
+
 const p = path.join(path.dirname(process.mainModule.filename), 'data', 'products.json');
 
 const getProductsFromFile = (callBack) => {
@@ -25,7 +28,7 @@ module.exports = class Product {
 
     save() {
         getProductsFromFile((products) => {
-            // if this.id /= null then the product already exists and is updated:
+            // if this.id != null then the product already exists and is updated:
             if (this.id) {
                 const existingProductIndex = products.findIndex(prod => prod.id == this.id);
                 const updatedProducts = [...products];
@@ -35,13 +38,26 @@ module.exports = class Product {
                 });
                 // else this.id gets an id number and is saved:
             } else {
-                this.id = Math.random();
+                this.id = +Math.random();
                 products.push(this);
                 fs.writeFile(p, JSON.stringify(products), (err) => {
                     console.log(err);
                 });
             }
         });
+    }
+
+    static deleteById(id) {
+        getProductsFromFile(products => {
+            const product = products.find(prod => prod.id == id);
+            const updatedProducts = products.filter(prod => prod.id != id);
+            fs.writeFile(p, JSON.stringify(updatedProducts), err => {
+                if (!err) {
+                    cartModel.deleteProduct(id, product.price);
+                }
+            });
+        });
+
     }
 
     static fetchAll(cb) {

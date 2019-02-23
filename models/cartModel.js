@@ -5,18 +5,23 @@ const path = require('path');
 
 const p = path.join(path.dirname(process.mainModule.filename), 'data', 'cart.json');
 
-module.exports = class Cart {
-    static addProduct(id, productPrice) {
-        // tries to read the file and if !err puts the file content in cart:
-        fs.readFile(p, (err, fileContent) => {
-            let cart = {
+const getCartFromFile = (callBack) => {
+    // tries to read the file and callbacks the content:
+    fs.readFile(p, (err, fileContent) => {
+        if (err) {
+            callBack({
                 products: [],
                 totalPrice: 0
-            };
-            if (!err) {
-                cart = JSON.parse(fileContent);
-            }
+            })
+        } else {
+            callBack(JSON.parse(fileContent));
+        }
+    });
+};
 
+module.exports = class Cart {
+    static addProduct(id, productPrice) {
+        getCartFromFile(cart => {
             // searches the array (cart.products) for an existing product and gets its id number:
             const existingProductIndex = cart.products.findIndex(prod => prod.id == id);
             // with the id number get the product
@@ -49,7 +54,21 @@ module.exports = class Cart {
             });
         });
 
-    };
+    }
+
+    static deleteProduct(id, price) {
+        getCartFromFile(cart => {
+            const updatedCart = {
+                ...cart
+            };
+            const product = updatedCart.products.find(prod => prod.id == id);
+            updatedCart.products = updatedCart.products.filter(prod => prod.id != id);
+            updatedCart.totalPrice = updatedCart.totalPrice - price * product.qty;
+            fs.writeFile(p, JSON.stringify(updatedCart), err => {
+                console.log(err);
+            })
+        });
+    }
 
 
 };
