@@ -70,5 +70,9 @@ module.exports = class Cart {
         });
     }
 
+    static getCart(cb) {
+        getCartFromFile(cb);
+    }
+
 
 };
