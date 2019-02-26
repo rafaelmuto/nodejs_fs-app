@@ -16,8 +16,7 @@ module.exports.getAddProduct = (req, res, nxt) => {
 exports.postAddProduct = (req, res, nxt) => {
     console.log('>>>adding:', req.body);
     const product = new productModel(null, req.body.title, req.body.imageURL, req.body.description, req.body.price);
-    product.save();
-    res.redirect('/');
+    product.save().then(res.redirect('/')).catch(err => console.log(err));
 };
 
 exports.getEditProduct = (req, res, nxt) => {

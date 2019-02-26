@@ -5,34 +5,40 @@ const cartModel = require('../models/cartModel');
 // here we exports all shop routes functions:
 
 exports.getIndex = (req, res, nxt) => {
-    productModel.fetchAll((products) => {
-        res.render('shop/index', {
-            pageTitle: 'Shop',
-            path: '/',
-            products: products
-        });
-    });
+    productModel.fetchAll()
+        .then(([rows, fieldData]) => {
+            res.render('shop/index', {
+                pageTitle: 'Shop',
+                path: '/',
+                products: rows
+            });
+        })
+        .catch(err => console.log(err));
 };
 
 exports.getProducts = (req, res, nxt) => {
-    productModel.fetchAll((products) => {
-        res.render('shop/product-list', {
-            pageTitle: 'Shop',
-            path: '/products',
-            products: products
-        });
-    });
+    productModel.fetchAll()
+        .then(([rows, fielData]) => {
+            res.render('shop/product-list', {
+                pageTitle: 'Shop',
+                path: '/products',
+                products: rows
+            });
+        })
+        .catch(err => console.log(err));
 };
 
 exports.getProduct = (req, res, nxt) => {
     const prodId = req.params.productId;
-    productModel.findById(prodId, (product) => {
-        res.render('shop/product-detail', {
-            pageTitle: product.title,
-            path: '/products',
-            product: product
+    productModel.findById(prodId)
+        .then(([product]) => {
+            res.render('shop/product-detail', {
+                pageTitle: product.title,
+                path: '/products',
+                product: product[0]
+            });
         })
-    });
+        .catch(err => console.log(err));
 };
 
 exports.getCart = (req, res, nxt) => {
