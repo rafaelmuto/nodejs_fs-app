@@ -5,24 +5,24 @@ const cartModel = require('../models/cartModel');
 // here we exports all shop routes functions:
 
 exports.getIndex = (req, res, nxt) => {
-    productModel.fetchAll()
-        .then(([rows, fieldData]) => {
+    productModel.findAll()
+        .then(products => {
             res.render('shop/index', {
                 pageTitle: 'Shop',
                 path: '/',
-                products: rows
+                products: products
             });
         })
         .catch(err => console.log(err));
 };
 
 exports.getProducts = (req, res, nxt) => {
-    productModel.fetchAll()
-        .then(([rows, fielData]) => {
+    productModel.findAll()
+        .then(products => {
             res.render('shop/product-list', {
                 pageTitle: 'Shop',
                 path: '/products',
-                products: rows
+                products: products
             });
         })
         .catch(err => console.log(err));
@@ -30,12 +30,28 @@ exports.getProducts = (req, res, nxt) => {
 
 exports.getProduct = (req, res, nxt) => {
     const prodId = req.params.productId;
-    productModel.findById(prodId)
-        .then(([product]) => {
+
+    // productModel.findAll({
+    //         where: {
+    //             id: prodId
+    //         }
+    //     })
+    //     .then(products => {
+    //         res.render('shop/product-detail', {
+    //             pageTitle: products[0].title,
+    //             path: '/products',
+    //             product: products[0]
+    //         });
+    //     })
+    //     .catch(err => console.log(err));
+
+    // same as above, but with findByPk() instead of findAll(...):
+    productModel.findByPk(prodId)
+        .then(product => {
             res.render('shop/product-detail', {
                 pageTitle: product.title,
                 path: '/products',
-                product: product[0]
+                product: product
             });
         })
         .catch(err => console.log(err));

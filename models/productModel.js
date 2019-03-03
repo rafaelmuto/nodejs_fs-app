@@ -1,31 +1,41 @@
-const db = require('../util/database');
+const Sequelize = require('sequelize');
 
-const cartModel = require('./cartModel');
+const sqlize = require('../util/database');
 
-module.exports = class Product {
-    constructor(id, title, imageURL, description, price) {
-        this.id = id;
-        this.title = title;
-        this.imageURL = imageURL;
-        this.description = description;
-        this.price = price;
+
+// sequelize takes the model name (in this case 'product') and uses it as the table name in the plural (in this case 'products'):
+// you can prevent this the configuration obj passed as the 3rd argument of define():
+const productModel = sqlize.define('product', {
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        allowNull: false,
+        primaryKey: true
+    },
+    title: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    price: {
+        type: Sequelize.DOUBLE,
+        allowNull: false
+    },
+    imageURL: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    description: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
+}, {
+    // configs go here...
+    // disable the modification of table names; By default, sequelize will automatically
+    // transform all passed model names (first parameter of define) into plural.
+    // if you don't want that, set the following:
+    // freezeTableName: true,
+    // define the table's name:
+    // tableName: 'custom_name'
+});
 
-    save() {
-        return db.execute('INSERT INTO products (title, price, imageURL, description) VALUES (?,?,?,?)',
-            [this.title, this.price, this.imageURL, this.description]
-        );
-    }
-
-    static deleteById(id) {
-
-    }
-
-    static fetchAll() {
-        return db.execute('SELECT * FROM products');
-    }
-
-    static findById(id) {
-        return db.execute('SELECT * FROM products WHERE products.id = ?', [id]);
-    }
-}
+module.exports = productModel;

@@ -15,8 +15,24 @@ module.exports.getAddProduct = (req, res, nxt) => {
 
 exports.postAddProduct = (req, res, nxt) => {
     console.log('>>>adding:', req.body);
-    const product = new productModel(null, req.body.title, req.body.imageURL, req.body.description, req.body.price);
-    product.save().then(res.redirect('/')).catch(err => console.log(err));
+    // this sequelize method creates and saves the data:
+    // instead of calling the prodructModel.create(), we can call the user obj and throuth it we can create a product (as we have registered the associations):
+    req.user.createProduct({
+            title: req.body.title,
+            price: req.body.price,
+            imageURL: req.body.imageURL,
+            description: req.body.description,
+            // and we dont need to pass the userId field:
+            // userId: req.user.id
+        })
+        .then(result => {
+            // console.log(result);
+            console.log('>>>Created Product');
+            res.redirect('/admin/products');
+        })
+        .catch(err => {
+            console.log(err);
+        });
 };
 
 exports.getEditProduct = (req, res, nxt) => {
@@ -25,17 +41,19 @@ exports.getEditProduct = (req, res, nxt) => {
         return res.redirect('/');
     }
     const prodId = req.params.productId;
-    productModel.findById(prodId, (product) => {
-        if (!product) {
-            res.redirect('/');
-        }
-        res.render('admin/edit-product', {
-            pageTitle: 'Edit Product',
-            path: '/edit-product',
-            edit: editMode,
-            product: product
-        });
-    });
+    productModel.findByPk(prodId)
+        .then(product => {
+            if (!product) {
+                res.redirect('/');
+            }
+            res.render('admin/edit-product', {
+                pageTitle: 'Edit Product',
+                path: '/edit-product',
+                edit: editMode,
+                product: product
+            });
+        })
+        .catch(err => console.log(err));
 };
 
 exports.postEditProduct = (req, res, nxt) => {
@@ -44,24 +62,43 @@ exports.postEditProduct = (req, res, nxt) => {
     const updatedPrice = req.body.price;
     const updatedImageURL = req.body.imageURL;
     const updatedDescription = req.body.description;
-    const updatedProduct = new productModel(prodId, updatedTitle, updatedImageURL, updatedDescription, updatedPrice);
-    updatedProduct.save();
-    console.log(updatedProduct);
+    productModel.findByPk(prodId)
+        .then(product => {
+            product.title = updatedTitle;
+            product.price = updatedPrice;
+            product.description = updatedDescription;
+            product.imageURL = updatedImageURL;
+            return product.save();
+        })
+        // as we returned product.save() we get to catch() eventual errors in the outer promisse, and the next then() will handle save() promisses too...
+        .then(result => {
+            console.log('>>>Product Updated: ', prodId);
+        })
+        .catch(err => console.log(err));
     res.redirect('/admin/products');
 };
 
 exports.getAdminProducts = (req, res, nxt) => {
-    productModel.fetchAll((products) => {
-        res.render('admin/products-list', {
-            pageTitle: 'Admin Products',
-            path: '/admin/products',
-            products: products
-        });
-    });
+    req.user.getProducts()
+        .then(products => {
+            res.render('admin/products-list', {
+                pageTitle: 'Admin Products',
+                path: '/admin/products',
+                products: products
+            });
+        })
+        .catch(err => console.log(err));
 };
 
 exports.postDeleteProduct = (req, res, nxt) => {
     const prodId = req.body.productId;
-    productModel.deleteById(prodId);
-    res.redirect('/admin/products');
+    productModel.findByPk(prodId)
+        .then(product => {
+            return product.destroy();
+        })
+        .then(result => {
+            console.log('>>>Product Destroyed: ', prodId);
+            res.redirect('/admin/products');
+        })
+        .catch(err => console.log(err));
 };

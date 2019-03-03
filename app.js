@@ -7,8 +7,11 @@ const path = require('path');
 const adminRoutes = require('./routes/adminRouter');
 const shopRoutes = require('./routes/shopRouter');
 
-// importing the database config file:
-const db = require('./util/database');
+// importing the database file:
+const sqlize = require('./util/database');
+// importing models:
+const userModel = require('./models/userModel');
+const productModel = require('./models/productModel');
 
 
 // creating the server(?) obj with the express() function, the function returns an obj:
@@ -31,11 +34,21 @@ app.use(bodyParser.urlencoded({
 }));
 
 
-// middleware for serving static filess
+// middleware for serving static files:
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-// registering imported routers as midwares:
+app.use((req, res, nxt) => {
+    userModel.findByPk(1)
+        .then(user => {
+            req.user = user;
+            nxt();
+        })
+        .catch(err => console.log(err));
+});
+
+
+// registering imported routers as middlewares:
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
@@ -48,7 +61,42 @@ app.use((req, res, nxt) => {
 });
 
 
-// starting the server at port 3000:
-app.listen(3000);
-console.log('>>>starting node server app!');
-console.log(__dirname);
+
+// creating models relations:
+productModel.belongsTo(userModel, {
+    constraints: true,
+    onDelete: 'CASCADE'
+});
+// or you could say:
+userModel.hasMany(productModel);
+
+
+
+// syncs the database with the models:
+sqlize.sync({
+        // this option forces changes in the database structure, may not be a good ideia on production... ;)
+        // force: true
+    })
+    // only starts the server if the sync action is ok:
+    .then(result => {
+        // console.log(result);
+        return userModel.findByPk(1);
+    })
+    .then(user => {
+        if (!user) {
+            // if findByPk(1) returns empty then create a new dummy user:
+            return userModel.create({
+                name: 'rafaelmuto',
+                email: 'r.nagahama@gmail.com'
+            })
+        }
+        return Promise.resolve(user);
+    })
+    .then(user => {
+        // console.log(user);
+        // starting the server at port 3000:
+        app.listen(3000);
+        console.log('>>>starting node server app!');
+        console.log(__dirname);
+    })
+    .catch(err => console.log(err));
