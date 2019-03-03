@@ -1,13 +1,10 @@
-// importing mysql module:
-const mysql = require('mysql2');
+const Sequelize = require('sequelize');
 
-// creating a query pool to deal with multyple queries:
-const pool = mysql.createPool({
+const sqlize = new Sequelize('node_fs', 'root', '', {
+    dialect: 'mysql',
     host: 'localhost',
-    user: 'root',
-    database: 'node_fs',
-    password: ''
+    // added operatosAliases: false to get rid of the deprecation warning...
+    operatorsAliases: false
 });
 
-// exporting this pool as promises:
-module.exports = pool.promise();
+module.exports = sqlize;
