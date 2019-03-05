@@ -38,6 +38,7 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+// this middleware looks for a userId == 1 and register the userModel Obj in the req:
 app.use((req, res, nxt) => {
     userModel.findByPk(1)
         .then(user => {
