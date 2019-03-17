@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700');
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
 
 * {
   box-sizing: border-box;
@@ -7,12 +7,7 @@
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Open Sans', sans-serif;
-}
-
-main {
-  padding: 1rem;
-  margin: auto;
+  font-family: "Open Sans", sans-serif;
 }
 
 .main-header {
@@ -51,36 +46,9 @@ main {
   color: #ffeb3b;
 }
 
-/* PRODUCT FORM */
-
-.product-form {
-  width: 20rem;
-  max-width: 90%;
+main {
+  padding: 1rem;
   margin: auto;
-}
-
-.form-control {
-  margin: 1rem 0;
-}
-
-.form-control label,
-.form-control input,
-.form-control textarea {
-  display: block;
-  width: 100%;
-  margin-bottom: 0.25rem;
-}
-
-.form-control input,
-.form-control textarea {
-  border: 1px solid #a1a1a1;
-  font: inherit;
-  border-radius: 2px;
-}
-
-.form-control input:focus,
-.form-control textarea:focus {
-  outline-color: #00695c;
 }
 
 /* PRODUCT GRID & CARD: */
@@ -88,15 +56,18 @@ main {
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 500px));
+  grid-template-rows: repeat(auto-fit, 700px);
+  grid-gap: 1rem;
 }
 
 .card {
+  height: 700px;
+  border-radius: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
 }
 
 .product-item {
-  /* width: 20rem; */
-  max-width: 95%;
+  width: 100%;
 }
 
 .card__header,
@@ -134,8 +105,8 @@ main {
 
 .product__description {
   text-align: center;
+  height: 7rem;
 }
-
 
 .card__actions {
   padding: 1rem;
@@ -174,4 +145,36 @@ main {
 
 .detailImg {
   width: 500px;
+}
+
+/* PRODUCT FORM */
+
+.product-form {
+  width: 20rem;
+  max-width: 90%;
+  margin: auto;
+}
+
+.form-control {
+  margin: 1rem 0;
+}
+
+.form-control label,
+.form-control input,
+.form-control textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 0.25rem;
+}
+
+.form-control input,
+.form-control textarea {
+  border: 1px solid #a1a1a1;
+  font: inherit;
+  border-radius: 2px;
+}
+
+.form-control input:focus,
+.form-control textarea:focus {
+  outline-color: #00695c;
 }
