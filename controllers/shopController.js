@@ -58,33 +58,48 @@ exports.getProduct = (req, res, nxt) => {
 };
 
 exports.getCart = (req, res, nxt) => {
-    cartModel.getCart(cart => {
-        productModel.fetchAll(products => {
-            const cartProducts = [];
-            for (product of products) {
-                const cartProductData = cart.products.find(prod => prod.id == product.id);
-                if (cartProductData) {
-                    cartProducts.push({
-                        productData: product,
-                        qty: cartProductData.qty
+    req.user.getCart()
+        .then(cart => {
+            return cart.getProducts()
+                .then(products => {
+                    res.render('shop/cart', {
+                        pageTitle: 'Your Cart',
+                        path: '/cart',
+                        products: cartProducts
                     });
-                }
-            }
-            res.render('shop/cart', {
-                pageTitle: 'Your Cart',
-                path: '/cart',
-                products: cartProducts
-            });
-        });
-    });
+                })
+                .catch(err => console.log(err));
+        })
+        .catch(err => console.log(err));
+
+    // cartModel.getCart(cart => {
+    //     productModel.fetchAll(products => {
+    //         const cartProducts = [];
+    //         for (product of products) {
+    //             const cartProductData = cart.products.find(prod => prod.id == product.id);
+    //             if (cartProductData) {
+    //                 cartProducts.push({
+    //                     productData: product,
+    //                     qty: cartProductData.qty
+    //                 });
+    //             }
+    //         }
+    //         res.render('shop/cart', {
+    //             pageTitle: 'Your Cart',
+    //             path: '/cart',
+    //             products: cartProducts
+    //         });
+    //     });
+    // });
 };
 
 exports.postCart = (req, res, nxt) => {
     const prodId = req.body.productId;
-    productModel.findById(prodId, (product) => {
-        cartModel.addProduct(prodId, product.price);
-    })
-    res.redirect('/cart');
+    req.user.getCart()
+        .then(cart => {
+            return cart.getProducts()
+        })
+        .catch(err => console.log(err));
 };
 
 exports.postCartDeleteProduct = (req, res, nxt) => {
