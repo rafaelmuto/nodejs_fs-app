@@ -4,9 +4,9 @@ block content
     if products.length > 0
         div.centered
             each product in products
-                p #{product.productData.title} (#{product.qty})
+                p #{product.title} (#{product.cartitem.quantity})
                 form(action="/cart-delete-item", method="POST")
                     button.btn(type="submit") REMOVE
-                    input(type="hidden", name="productId", value= product.productData.id)
+                    input(type="hidden", name="productId", value= product.id)
     else
         h1 cart is empty...
