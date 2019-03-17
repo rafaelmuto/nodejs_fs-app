@@ -113,12 +113,19 @@ exports.postCart = (req, res, nxt) => {
 
 exports.postCartDeleteProduct = (req, res, nxt) => {
   const prodId = req.body.productId;
-  console.log(prodId);
-  productModel.findById(prodId, product => {
-    console.log(product);
-    cartModel.deleteProduct(prodId, product.price);
-    res.redirect("/cart");
-  });
+  req.user
+    .getCart()
+    .then(cart => {
+      return cart.getProducts({ where: { id: prodId } });
+    })
+    .then(products => {
+      const product = products[0];
+      return product.cartitem.destroy();
+    })
+    .then(result => {
+      res.redirect("/cart");
+    })
+    .catch(err => console.log(err));
 };
 
 exports.getCheckout = (req, res, nxt) => {
