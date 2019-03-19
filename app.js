@@ -14,6 +14,8 @@ const userModel = require("./models/userModel");
 const productModel = require("./models/productModel");
 const cartModel = require("./models/cartModel");
 const cartitemModel = require("./models/cartitemModel");
+const orderModel = require("./models/orderModel");
+const orderitemModel = require("./models/orderitemModel");
 
 // creating the server(?) obj with the express() function, the function returns an obj:
 const app = express();
@@ -59,7 +61,6 @@ productModel.belongsTo(userModel, {
   constraints: true,
   onDelete: "CASCADE"
 });
-// or you could say:
 userModel.hasMany(productModel);
 
 userModel.hasOne(cartModel);
@@ -67,6 +68,12 @@ cartModel.belongsTo(userModel);
 
 cartModel.belongsToMany(productModel, { through: cartitemModel });
 productModel.belongsToMany(cartModel, { through: cartitemModel });
+
+orderModel.belongsTo(userModel);
+userModel.hasMany(orderModel);
+
+userModel.hasMany(orderModel);
+orderModel.belongsToMany(productModel, { through: orderitemModel });
 
 // syncs the database with the models:
 sqlize
