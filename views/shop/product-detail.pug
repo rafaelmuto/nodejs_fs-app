@@ -1,8 +1,8 @@
 extend ../layouts/main-layout.pug
 
 block content
-    main.centered
-        h1= product.title
+    main.centered.card
+        h1.detail__title= product.title
         hr
         div
             img.detailImg(src=product.imageURL, alt=product.title)
