@@ -1,8 +1,8 @@
 extend ../layouts/main-layout.pug
 
 block content 
-    if products.length > 0
-        div.centered.cart__grid
+    div.centered.cart__grid
+        if products.length > 0
             each product in products
                 div.card.cart__details
                     h1.cart__title #{product.title} 
@@ -10,5 +10,7 @@ block content
                     form(action="/cart-delete-item", method="POST")
                         button.btn(type="submit") REMOVE
                         input(type="hidden", name="productId", value= product.id)
-    else
-        h1 cart is empty...
+            form(action="/create-order", method="POST")
+                button.btn(type="submit") ORDER NOW!
+        else
+            h1 cart is empty...
