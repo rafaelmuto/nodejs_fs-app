@@ -135,6 +135,19 @@ exports.getCheckout = (req, res, nxt) => {
   });
 };
 
+exports.postOrder = (req, res, nxt) => {
+  req.user
+    .getCart()
+    .then(cart => {
+      return cart.getProducts();
+    })
+    .then(products => {
+      // console.log(products);
+    })
+    .catch(err => console.log(err));
+  res.redirect("/");
+};
+
 exports.getOrders = (req, res, nxt) => {
   res.render("shop/orders", {
     pageTitle: "Your Orders",

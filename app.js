@@ -57,10 +57,7 @@ app.use((req, res, nxt) => {
 });
 
 // creating models relations:
-productModel.belongsTo(userModel, {
-  constraints: true,
-  onDelete: "CASCADE"
-});
+productModel.belongsTo(userModel, { constraints: true, onDelete: "CASCADE" });
 userModel.hasMany(productModel);
 
 userModel.hasOne(cartModel);
@@ -72,7 +69,6 @@ productModel.belongsToMany(cartModel, { through: cartitemModel });
 orderModel.belongsTo(userModel);
 userModel.hasMany(orderModel);
 
-userModel.hasMany(orderModel);
 orderModel.belongsToMany(productModel, { through: orderitemModel });
 
 // syncs the database with the models:
@@ -94,7 +90,7 @@ sqlize
         email: "r.nagahama@gmail.com"
       });
     }
-    return Promise.resolve(user);
+    return user;
   })
   .then(user => {
     // console.log(user);
@@ -104,6 +100,5 @@ sqlize
     // starting the server at port 3000:
     app.listen(3000);
     console.log(">>>starting node server app!");
-    console.log(__dirname);
   })
   .catch(err => console.log(err));
