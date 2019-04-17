@@ -70,6 +70,7 @@ orderModel.belongsTo(userModel);
 userModel.hasMany(orderModel);
 
 orderModel.belongsToMany(productModel, { through: orderitemModel });
+productModel.belongsToMany(orderModel, { through: orderitemModel });
 
 // syncs the database with the models:
 sqlize
@@ -93,10 +94,14 @@ sqlize
     return user;
   })
   .then(user => {
-    // console.log(user);
-    return user.createCart();
+    return user.getCart({ where: { userId: user.id } }).then(usercart => {
+      if (!usercart) {
+        return user.createCart();
+      }
+      return user;
+    });
   })
-  .then(cart => {
+  .then(() => {
     // starting the server at port 3000:
     app.listen(3000);
     console.log(">>>starting node server app!");
