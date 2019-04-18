@@ -1,6 +1,5 @@
 // importing models:
 const productModel = require("../models/productModel");
-const cartModel = require("../models/cartModel");
 
 // here we exports all shop routes functions:
 
@@ -136,21 +135,44 @@ exports.getCheckout = (req, res, nxt) => {
 };
 
 exports.postOrder = (req, res, nxt) => {
+  let fetchedCart;
   req.user
     .getCart()
     .then(cart => {
+      fetchedCart = cart;
       return cart.getProducts();
     })
     .then(products => {
-      // console.log(products);
+      return req.user
+        .createOrder()
+        .then(order => {
+          return order.addProducts(
+            products.map(product => {
+              product.orderitem = { quantity: product.cartitem.quantity };
+              return product;
+            })
+          );
+        })
+        .catch(err => console.log(err));
+    })
+    .then(result => {
+      fetchedCart.setProducts(null);
+    })
+    .then(result => {
+      res.redirect("/orders");
     })
     .catch(err => console.log(err));
-  res.redirect("/");
 };
 
 exports.getOrders = (req, res, nxt) => {
-  res.render("shop/orders", {
-    pageTitle: "Your Orders",
-    path: "/orders"
-  });
+  req.user
+    .getOrders({ include: ["products"] })
+    .then(orders => {
+      res.render("shop/orders", {
+        pageTitle: "Your Orders",
+        path: "/orders",
+        orders: orders
+      });
+    })
+    .catch(err => console.log(err));
 };

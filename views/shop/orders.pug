@@ -1,4 +1,13 @@
 extend ../layouts/main-layout.pug
 
-block content 
-    h1 orders.pug
+block content
+    div.centered.cart__grid
+        if orders.length > 0
+            each order in orders
+                div.card.cart__details
+                    h1.cart__title #{order.id} 
+                    ul
+                        each product in order.products
+                            li (#{product.orderitem.quantity}) #{product.title}
+        else
+            h1 no orders here... 
