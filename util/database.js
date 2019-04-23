@@ -1,13 +1,20 @@
-const Sequelize = require("sequelize");
+// importing mongodb package
+const mongodb = require("mongodb");
 
-// initializing sequelize; calling a new instance with new Sequelize( db name, user, password, {settings}):
-const sqlize = new Sequelize("node_fs", "root", "", {
-  dialect: "mysql",
-  host: "localhost",
-  // added operatosAliases: false to get rid of the deprecation warning...
-  operatorsAliases: false,
-  // disable loggin:
-  logging: false
-});
+// initializing a mongodb obj
+const MongoClient = mongodb.MongoClient;
 
-module.exports = sqlize;
+const mongoConnect = callback => {
+  MongoClient.connect(
+    "mongodb+srv://nodeApp:12345@mdbtest-enper.gcp.mongodb.net/test?retryWrites=true"
+  )
+    .then(client => {
+      console.log("mongoDB connected!");
+      callback(client);
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+module.exports = mongoConnect;
