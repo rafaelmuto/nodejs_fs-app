@@ -7,7 +7,7 @@ const path = require("path");
 const adminRoutes = require("./routes/adminRouter");
 // const shopRoutes = require("./routes/shopRouter");
 
-const mongoConnect = require("./util/database.js");
+const mongoConnect = require("./util/database.js").mongoConnect;
 
 // creating the server(?) obj with the express() function, the function returns an obj:
 const app = express();
@@ -37,7 +37,6 @@ app.use((req, res, nxt) => {
   res.status(404).render("404", { pageTitle: "Err404 Page Not Found" });
 });
 
-mongoConnect(client => {
-  console.log(client);
+mongoConnect(() => {
   app.listen(3000);
 });
