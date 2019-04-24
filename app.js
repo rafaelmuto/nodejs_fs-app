@@ -5,7 +5,7 @@ const path = require("path");
 
 // importing routes:
 const adminRoutes = require("./routes/adminRouter");
-// const shopRoutes = require("./routes/shopRouter");
+const shopRoutes = require("./routes/shopRouter");
 
 const mongoConnect = require("./util/database.js").mongoConnect;
 
@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // registering imported routers as middlewares:
 app.use("/admin", adminRoutes);
-// app.use(shopRoutes);
+app.use(shopRoutes);
 
 // catch all route for 404 errors:
 // instead of creating a whole controller you can just put your route here...

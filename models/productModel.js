@@ -20,6 +20,21 @@ class productModel {
         console.log(err);
       });
   }
+
+  static fetchAll() {
+    const db = getDb();
+    return db
+      .collection("products")
+      .find()
+      .toArray()
+      .then(products => {
+        console.log(products);
+        return products;
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 }
 
 // sequelize takes the model name (in this case 'product') and uses it as the table name in the plural (in this case 'products'):
