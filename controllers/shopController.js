@@ -32,7 +32,7 @@ exports.getProducts = (req, res, nxt) => {
 exports.getProduct = (req, res, nxt) => {
   const prodId = req.params.productId;
   productModel
-    .findByPk(prodId)
+    .findById(prodId)
     .then(product => {
       res.render("shop/product-detail", {
         pageTitle: product.title,

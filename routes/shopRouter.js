@@ -10,7 +10,7 @@ router.get("/", shopController.getIndex);
 // GET route for the products listing:
 router.get("/products", shopController.getProducts);
 // GET route for getting to the product details page:
-// router.get("/products/:productId", shopController.getProduct);
+router.get("/products/:productId", shopController.getProduct);
 // GET route for getting to the cart list:
 // router.get("/cart", shopController.getCart);
 // POST route for adding products to the cart:
