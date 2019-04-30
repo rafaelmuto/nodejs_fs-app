@@ -91,16 +91,13 @@ exports.getAdminProducts = (req, res, nxt) => {
     .catch(err => console.log(err));
 };
 
-// exports.postDeleteProduct = (req, res, nxt) => {
-//   const prodId = req.body.productId;
-//   productModel
-//     .findByPk(prodId)
-//     .then(product => {
-//       return product.destroy();
-//     })
-//     .then(result => {
-//       console.log(">>>Product Destroyed: ", prodId);
-//       res.redirect("/admin/products");
-//     })
-//     .catch(err => console.log(err));
-// };
+exports.postDeleteProduct = (req, res, nxt) => {
+  const prodId = req.body.productId;
+  productModel
+    .deleteById(prodId)
+    .then(() => {
+      console.log(">>>Product Destroyed: ", prodId);
+      res.redirect("/admin/products");
+    })
+    .catch(err => console.log(err));
+};
