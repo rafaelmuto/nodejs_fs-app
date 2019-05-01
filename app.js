@@ -7,13 +7,16 @@ const path = require("path");
 const adminRoutes = require("./routes/adminRouter");
 const shopRoutes = require("./routes/shopRouter");
 
+// importing models:
+const userModel = require("./models/userModel");
+
 const mongoConnect = require("./util/database.js").mongoConnect;
 
 // creating the server(?) obj with the express() function, the function returns an obj:
 const app = express();
 
 // =================
-// MIDDLEWARES HERE:
+// Middlewares:
 // =================
 
 // setting up the view engine (pug):
@@ -27,6 +30,19 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // middleware for serving static files:
 app.use(express.static(path.join(__dirname, "public")));
 
+// registering user in the req:
+app.use((req, res, nxt) => {
+  userModel
+    .findById("5cca00e2539d3e2af63635f6")
+    .then(user => {
+      req.user = user;
+      nxt();
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
+
 // registering imported routers as middlewares:
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
@@ -36,6 +52,10 @@ app.use(shopRoutes);
 app.use((req, res, nxt) => {
   res.status(404).render("404", { pageTitle: "Err404 Page Not Found" });
 });
+
+// ====================
+// Starting app.server:
+// ====================
 
 mongoConnect(() => {
   app.listen(3000);
