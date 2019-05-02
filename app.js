@@ -35,7 +35,7 @@ app.use((req, res, nxt) => {
   userModel
     .findById("5cca00e2539d3e2af63635f6")
     .then(user => {
-      req.user = user;
+      req.user = new userModel(user.username, user.email, user.cart, user._id);
       nxt();
     })
     .catch(err => {

@@ -27,7 +27,7 @@ class productModel {
     return dbOp
       .then(result => {
         console.log(">>>productModel: save()");
-        console.log(this._id);
+        // console.log(this._id);
         // console.log(result);
       })
       .catch(err => {
@@ -43,7 +43,7 @@ class productModel {
       .toArray()
       .then(products => {
         console.log(">>>productModel: fetchAll()");
-        console.log(products);
+        // console.log(products);
         return products;
       })
       .catch(err => {
@@ -58,8 +58,8 @@ class productModel {
       .find({ _id: new mongodb.ObjectID(prodId) })
       .next()
       .then(product => {
-        console.log(">>>productModel: findById()");
-        console.log(product);
+        console.log(">>>productModel: findById(" + prodId + ")");
+        // console.log(product);
         return product;
       })
       .catch(err => {
@@ -73,8 +73,8 @@ class productModel {
       .collection("products")
       .deleteOne({ _id: new mongodb.ObjectID(prodId) })
       .then(result => {
-        console.log(">>>productModel: deleteById()");
-        console.log(prodId);
+        console.log(">>>productModel: deleteById(" + prodId + ")");
+        // console.log(prodId);
       })
       .catch(err => {
         console.log(err);

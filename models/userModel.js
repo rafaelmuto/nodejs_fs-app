@@ -3,9 +3,11 @@ const mongodb = require("mongodb");
 const getDb = require("../util/database").getDb;
 
 class userModel {
-  constructor(username, email) {
+  constructor(username, email, cart, id) {
     this.username = username;
     this.email = email;
+    this.cart = cart;
+    this._id = id;
   }
 
   save() {
@@ -15,11 +17,55 @@ class userModel {
       .insertOne(this)
       .then(result => {
         console.log(">>>userModel: save()");
-        console.log(result);
+        // console.log(result);
       })
       .catch(err => {
         console.log(err);
       });
+  }
+
+  addToCart(product) {
+    // searching for the product in the cart
+    const cartProductIndex = this.cart.items.findIndex(cp => {
+      return cp.productId.toString() == product._id.toString();
+    });
+    let newQuantity = 1;
+    const updatedCartItems = [...this.cart.items];
+    // if the product already exists in the cart, just update its quantity.
+    if (cartProductIndex >= 0) {
+      newQuantity = this.cart.items[cartProductIndex].qnt + 1;
+      updatedCartItems[cartProductIndex].qnt = newQuantity;
+      // else push a new entry to the cart array
+    } else {
+      updatedCartItems.push({
+        productId: new mongodb.ObjectID(product._id),
+        qnt: newQuantity
+      });
+    }
+    // commiting the cart item to a new array
+    const updatedCart = {
+      items: [...updatedCartItems]
+    };
+
+    // connecting and updating the database
+    const db = getDb();
+    return db
+      .collection("users")
+      .updateOne(
+        { _id: new mongodb.ObjectID(this._id) },
+        { $set: { cart: updatedCart } }
+      )
+      .then(result => {
+        console.log(">>>userModel: addToCart(" + product._id + ")");
+        // console.log(result);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+  getCart() {
+    return this.cart;
   }
 
   static findById(userId) {
@@ -28,8 +74,8 @@ class userModel {
       .collection("users")
       .findOne({ _id: new mongodb.ObjectID(userId) })
       .then(user => {
-        console.log(">>>userModel: findById()");
-        console.log(user);
+        console.log(">>>userModel: findById(" + userId + ")");
+        // console.log(user);
         return user;
       })
       .catch(err => {
