@@ -87,29 +87,8 @@ exports.getCheckout = (req, res, nxt) => {
 };
 
 exports.postOrder = (req, res, nxt) => {
-  let fetchedCart;
   req.user
-    .getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts();
-    })
-    .then(products => {
-      return req.user
-        .createOrder()
-        .then(order => {
-          return order.addProducts(
-            products.map(product => {
-              product.orderitem = { quantity: product.cartitem.quantity };
-              return product;
-            })
-          );
-        })
-        .catch(err => console.log(err));
-    })
-    .then(result => {
-      fetchedCart.setProducts(null);
-    })
+    .addOrder()
     .then(result => {
       res.redirect("/orders");
     })
