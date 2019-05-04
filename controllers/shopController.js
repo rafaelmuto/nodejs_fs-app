@@ -46,17 +46,12 @@ exports.getProduct = (req, res, nxt) => {
 exports.getCart = (req, res, nxt) => {
   req.user
     .getCart()
-    .then(cart => {
-      return cart
-        .getProducts()
-        .then(products => {
-          res.render("shop/cart", {
-            pageTitle: "Your Cart",
-            path: "/cart",
-            products: products
-          });
-        })
-        .catch(err => console.log(err));
+    .then(products => {
+      res.render("shop/cart", {
+        pageTitle: "Your Cart",
+        path: "/cart",
+        products: products
+      });
     })
     .catch(err => console.log(err));
 };

@@ -65,7 +65,24 @@ class userModel {
   }
 
   getCart() {
-    return this.cart;
+    const db = getDb();
+    const productIds = this.cart.items.map(i => {
+      return i.productId;
+    });
+    return db
+      .collection("products")
+      .find({ _id: { $in: productIds } })
+      .toArray()
+      .then(produtcs => {
+        return produtcs.map(p => {
+          return {
+            ...p,
+            qnt: this.cart.items.find(i => {
+              return i.productId.toString() == p._id.toString();
+            }).qnt
+          };
+        });
+      });
   }
 
   static findById(userId) {
