@@ -32,6 +32,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // registering user in the req:
 app.use((req, res, nxt) => {
+  console.log("==> app.js");
   userModel
     .findById("5cca00e2539d3e2af63635f6")
     .then(user => {

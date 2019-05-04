@@ -13,7 +13,7 @@ const mongoConnect = callback => {
     { useNewUrlParser: true }
   )
     .then(client => {
-      console.log("mongoDB connected!");
+      console.log("==> mongoDB connected!");
       _db = client.db();
       callback();
     })
