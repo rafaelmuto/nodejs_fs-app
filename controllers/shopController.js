@@ -97,7 +97,7 @@ exports.postOrder = (req, res, nxt) => {
 
 exports.getOrders = (req, res, nxt) => {
   req.user
-    .getOrders({ include: ["products"] })
+    .getOrders()
     .then(orders => {
       res.render("shop/orders", {
         pageTitle: "Your Orders",
