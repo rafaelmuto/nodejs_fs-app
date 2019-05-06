@@ -65,6 +65,7 @@ class userModel {
   }
 
   getCart() {
+    console.log(">>>userModel: getCart()");
     const db = getDb();
     const productIds = this.cart.items.map(i => {
       return i.productId;
@@ -107,11 +108,22 @@ class userModel {
   }
 
   addOrder() {
+    console.log(">>>userModel: addOrder()");
     // try to implement total value of the order...
     const db = getDb();
-    return db
-      .collection("orders")
-      .insertOne(this.cart)
+    // getting cart products info
+    return this.getCart()
+      .then(products => {
+        const order = {
+          items: products,
+          user: {
+            _id: new mongodb.ObjectID(this._id),
+            name: this.username,
+            email: this.email
+          }
+        };
+        return db.collection("orders").insertOne(order);
+      })
       .then(result => {
         this.cart = { items: [] };
         return db
