@@ -6,18 +6,23 @@ const router = express.Router();
 // importing controllers:
 const adminController = require("../controllers/adminController");
 
-router.get("/products", adminController.getAdminProducts);
+// // GET route to display the list of products of a user:
+// router.get("/products", adminController.getAdminProducts);
 
-// /admin/add-product -> GET
-router.get("/add-product", adminController.getAddProduct);
-// /admin/add-product -> POST
-router.post("/add-product", adminController.postAddProduct);
-// admin/edit-product -> GET
-router.get("/edit-product/:productId", adminController.getEditProduct);
-// admin/edit-product -> POST
-router.post("/edit-product", adminController.postEditProduct);
+// // GET route to display the add-product form:
+// router.get("/add-product", adminController.getAddProduct);
 
-router.post("/delete-product", adminController.postDeleteProduct);
+// // POST route to include a product to the database:
+// router.post("/add-product", adminController.postAddProduct);
+
+// // GET route to display the edit-product form pre populated with data about that product:
+// router.get("/edit-product/:productId", adminController.getEditProduct);
+
+// // POST route to edit a product in the database:
+// router.post("/edit-product", adminController.postEditProduct);
+
+// // POST route to delete a product:
+// router.post("/delete-product", adminController.postDeleteProduct);
 
 // exporting the router obj:
 module.exports = router;

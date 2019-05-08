@@ -2,6 +2,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
+const mongoose = require("mongoose");
 
 // importing routes:
 const adminRoutes = require("./routes/adminRouter");
@@ -9,8 +10,6 @@ const shopRoutes = require("./routes/shopRouter");
 
 // importing models:
 const userModel = require("./models/userModel");
-
-const mongoConnect = require("./util/database.js").mongoConnect;
 
 // creating the server(?) obj with the express() function, the function returns an obj:
 const app = express();
@@ -31,18 +30,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // registering user in the req:
-app.use((req, res, nxt) => {
-  console.log("==> app.js");
-  userModel
-    .findById("5cca00e2539d3e2af63635f6")
-    .then(user => {
-      req.user = new userModel(user.username, user.email, user.cart, user._id);
-      nxt();
-    })
-    .catch(err => {
-      console.log(err);
-    });
-});
+// app.use((req, res, nxt) => {
+//   console.log("==> app.js");
+//   userModel
+//     .findById("5cca00e2539d3e2af63635f6")
+//     .then(user => {
+//       req.user = new userModel(user.username, user.email, user.cart, user._id);
+//       nxt();
+//     })
+//     .catch(err => {
+//       console.log(err);
+//     });
+// });
 
 // registering imported routers as middlewares:
 app.use("/admin", adminRoutes);
@@ -58,6 +57,17 @@ app.use((req, res, nxt) => {
 // Starting app.server:
 // ====================
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+mongoose
+  .connect(
+    "mongodb+srv://nodeApp:12345@mdbtest-enper.gcp.mongodb.net/nodejs_app?retryWrites=true",
+    // warning: (node:70332) DeprecationWarning: current URL string parser is deprecated,
+    // and will be removed in a future version. To use the new parser, pass option
+    // { useNewUrlParser: true } to MongoClient.connect.
+    { useNewUrlParser: true }
+  )
+  .then(result => {
+    app.listen(3000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
