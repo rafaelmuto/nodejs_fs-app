@@ -4,9 +4,11 @@ const productModel = require("../models/productModel");
 // here we exports all shop routes functions:
 
 exports.getIndex = (req, res, nxt) => {
+  console.log("==> shopController: getIndex");
   productModel
-    .fetchAll()
+    .find()
     .then(products => {
+      console.log("-> products list:", products);
       res.render("shop/index", {
         pageTitle: "Shop",
         path: "/",
@@ -17,9 +19,11 @@ exports.getIndex = (req, res, nxt) => {
 };
 
 exports.getProducts = (req, res, nxt) => {
+  console.log("==> shopController: getProducts");
   productModel
-    .fetchAll()
+    .find()
     .then(products => {
+      console.log("-> products list:", products);
       res.render("shop/product-list", {
         pageTitle: "Shop",
         path: "/products",

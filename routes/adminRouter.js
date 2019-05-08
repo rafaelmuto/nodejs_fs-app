@@ -9,11 +9,11 @@ const adminController = require("../controllers/adminController");
 // // GET route to display the list of products of a user:
 // router.get("/products", adminController.getAdminProducts);
 
-// // GET route to display the add-product form:
-// router.get("/add-product", adminController.getAddProduct);
+// GET route to display the add-product form:
+router.get("/add-product", adminController.getAddProduct);
 
-// // POST route to include a product to the database:
-// router.post("/add-product", adminController.postAddProduct);
+// POST route to include a product to the database:
+router.post("/add-product", adminController.postAddProduct);
 
 // // GET route to display the edit-product form pre populated with data about that product:
 // router.get("/edit-product/:productId", adminController.getEditProduct);
