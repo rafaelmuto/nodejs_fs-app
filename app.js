@@ -8,22 +8,17 @@ const mongoose = require("mongoose");
 const adminRoutes = require("./routes/adminRouter");
 const shopRoutes = require("./routes/shopRouter");
 
-// importing models:
-const userModel = require("./models/userModel");
-
 // creating the server(?) obj with the express() function, the function returns an obj:
 const app = express();
 
-// =================
-// Middlewares:
-// =================
+// ==> Middlewares:
 
 // setting up the view engine (pug):
 app.set("view engine", "pug");
 // setting up the views folder, /views is the default thouth:
 app.set("views", "views");
 
-// register the new middleware; bodyParser (imported previously):
+// register the new middleware; bodyParser:
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // middleware for serving static files:
@@ -53,9 +48,7 @@ app.use((req, res, nxt) => {
   res.status(404).render("404", { pageTitle: "Err404 Page Not Found" });
 });
 
-// ====================
-// Starting app.server:
-// ====================
+// ==> Connecting to the database and Starting app.server:
 
 mongoose
   .connect(
