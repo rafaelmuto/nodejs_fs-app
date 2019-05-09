@@ -5,6 +5,7 @@ const productModel = require("../models/productModel");
 
 // you can use module.exports or just exports...
 exports.getAddProduct = (req, res, nxt) => {
+  console.log("==> adminController: getAddProduct");
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
@@ -15,7 +16,7 @@ exports.getAddProduct = (req, res, nxt) => {
 
 exports.postAddProduct = (req, res, nxt) => {
   console.log("==> adminController: postAddProduct");
-  console.log("-> adding:", req.body);
+  console.log("-> adding product:", req.body);
   const title = req.body.title;
   const imageURL = req.body.imageURL;
   const price = req.body.price;
@@ -40,8 +41,10 @@ exports.postAddProduct = (req, res, nxt) => {
 };
 
 exports.getEditProduct = (req, res, nxt) => {
+  console.log("==> adminController: getEditProduct");
   const editMode = req.query.edit;
   if (!editMode) {
+    console.log("-> acesses denied: editMode == FALSE");
     return res.redirect("/");
   }
   const prodId = req.params.productId;
@@ -49,8 +52,10 @@ exports.getEditProduct = (req, res, nxt) => {
     .findById(prodId)
     .then(product => {
       if (!product) {
+        console.log("-> no such product found");
         res.redirect("/");
       }
+      console.log("-> product updated:", product);
       res.render("admin/edit-product", {
         pageTitle: "Edit Product",
         path: "/edit-product",
@@ -62,34 +67,35 @@ exports.getEditProduct = (req, res, nxt) => {
 };
 
 exports.postEditProduct = (req, res, nxt) => {
+  console.log("==> adminController: postEditProduct");
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
-  const updatedImageURL = req.body.imageURL;
+  const updatedImageUrl = req.body.imageUrl;
   const updatedDescription = req.body.description;
-  const updatedUserId = req.user._id;
 
-  const product = new productModel(
-    updatedTitle,
-    updatedPrice,
-    updatedDescription,
-    updatedImageURL,
-    prodId,
-    updatedUserId
-  );
-  product
-    .save()
-    .then(result => {
-      console.log(">>>Product Updated: ", prodId);
+  productModel
+    .findById(prodId)
+    .then(product => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.description = updatedDescription;
+      product.imageUrl = updatedImageUrl;
+
+      console.log("-> diplaying product:", product);
+
+      return product.save();
     })
     .catch(err => console.log(err));
   res.redirect("/admin/products");
 };
 
 exports.getAdminProducts = (req, res, nxt) => {
+  console.log("==> adminController: getAdminProducts");
   productModel
-    .fetchAll()
+    .find()
     .then(products => {
+      console.log("-> products list:", products);
       res.render("admin/products-list", {
         pageTitle: "Admin Products",
         path: "/admin/products",
@@ -100,11 +106,12 @@ exports.getAdminProducts = (req, res, nxt) => {
 };
 
 exports.postDeleteProduct = (req, res, nxt) => {
+  console.log("==> adminController: postDeleteProduct");
   const prodId = req.body.productId;
   productModel
-    .deleteById(prodId)
+    .findByIdAndDelete(prodId)
     .then(() => {
-      console.log(">>>Product Destroyed: ", prodId);
+      console.log("-> product deleted:", prodId);
       res.redirect("/admin/products");
     })
     .catch(err => console.log(err));

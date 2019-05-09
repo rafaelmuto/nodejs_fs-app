@@ -34,10 +34,12 @@ exports.getProducts = (req, res, nxt) => {
 };
 
 exports.getProduct = (req, res, nxt) => {
+  console.log("==> shopController: getProduct");
   const prodId = req.params.productId;
   productModel
     .findById(prodId)
     .then(product => {
+      console.log("-> product:", product);
       res.render("shop/product-detail", {
         pageTitle: product.title,
         path: "/products",
