@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   cart: {
     items: [
       {
-        productId: { type: Schema.Types.ObjectId, required: true },
+        productId: { type: mongoose.Schema.Types.ObjectId, required: true },
         qnt: { type: Number, require: true }
       }
     ]

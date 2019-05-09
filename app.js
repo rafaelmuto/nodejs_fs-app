@@ -1,3 +1,5 @@
+console.log("==> starting app.js");
+
 // importing express.js and other modules:
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -7,6 +9,9 @@ const mongoose = require("mongoose");
 // importing routes:
 const adminRoutes = require("./routes/adminRouter");
 const shopRoutes = require("./routes/shopRouter");
+
+// importing userModel:
+const userModel = require("./models/userModel");
 
 // creating the server(?) obj with the express() function, the function returns an obj:
 const app = express();
@@ -25,18 +30,18 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 // registering user in the req:
-// app.use((req, res, nxt) => {
-//   console.log("==> app.js");
-//   userModel
-//     .findById("5cca00e2539d3e2af63635f6")
-//     .then(user => {
-//       req.user = new userModel(user.username, user.email, user.cart, user._id);
-//       nxt();
-//     })
-//     .catch(err => {
-//       console.log(err);
-//     });
-// });
+app.use((req, res, nxt) => {
+  console.log("-> registering user to req.user");
+  userModel
+    .findById("5cd3775d4ec45c7e99869cb0")
+    .then(user => {
+      req.user = user;
+      nxt();
+    })
+    .catch(err => {
+      console.log(err);
+    });
+});
 
 // registering imported routers as middlewares:
 app.use("/admin", adminRoutes);
@@ -59,6 +64,23 @@ mongoose
     { useNewUrlParser: true }
   )
   .then(result => {
+    console.log("==> mongoose connected!");
+
+    userModel.findOne().then(user => {
+      if (!user) {
+        const user = new userModel({
+          name: "rafaelmuto",
+          email: "r.nagahama@gmail.com",
+          cart: {
+            items: []
+          }
+        });
+        console.log("-> creating test user:", user);
+        user.save();
+      }
+    });
+
+    console.log("-> starting server listen");
     app.listen(3000);
   })
   .catch(err => {
