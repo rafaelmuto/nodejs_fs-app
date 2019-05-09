@@ -12,7 +12,12 @@ const productSchema = new mongoose.Schema({
     requeire: true
   },
   description: String,
-  imageUrl: String
+  imageUrl: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  }
 });
 
 module.exports = mongoose.model("Product", productSchema);
