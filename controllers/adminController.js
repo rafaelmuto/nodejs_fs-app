@@ -18,14 +18,16 @@ exports.postAddProduct = (req, res, nxt) => {
   console.log("==> adminController: postAddProduct");
   console.log("-> adding product:", req.body);
   const title = req.body.title;
-  const imageURL = req.body.imageURL;
+  const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
   const product = new productModel({
     title: title,
     price: price,
     description: description,
-    imageUrl: imageURL
+    imageUrl: imageUrl,
+    // mongoose will automatically get the _id from the userModel Obj:
+    userId: req.user
   });
 
   product
@@ -94,6 +96,7 @@ exports.getAdminProducts = (req, res, nxt) => {
   console.log("==> adminController: getAdminProducts");
   productModel
     .find()
+    // .populate("userId")
     .then(products => {
       console.log("-> products list:", products);
       res.render("admin/products-list", {
