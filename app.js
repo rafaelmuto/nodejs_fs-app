@@ -51,6 +51,7 @@ app.use(shopRoutes);
 // instead of creating a whole controller you can just put your route here...
 app.use((req, res, nxt) => {
   res.status(404).render("404", { pageTitle: "Err404 Page Not Found" });
+  console.log("-> Err404 Page Not Found");
 });
 
 // ==> Connecting to the database and Starting app.server:
