@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema({
   cart: {
     items: [
       {
-        productId: {
+        product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
           required: true
@@ -27,7 +27,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.addToCart = function(product) {
   const cartProductIndex = this.cart.items.findIndex(cp => {
-    return cp.productId.toString() == product._id.toString();
+    return cp.product.toString() == product._id.toString();
   });
   let newQnt = 1;
   const updatedCartItems = [...this.cart.items];
@@ -37,7 +37,7 @@ userSchema.methods.addToCart = function(product) {
     updatedCartItems[cartProductIndex].qnt = newQnt;
   } else {
     updatedCartItems.push({
-      productId: product._id,
+      product: product._id,
       qnt: newQnt
     });
   }

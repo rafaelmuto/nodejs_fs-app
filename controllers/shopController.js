@@ -8,7 +8,7 @@ exports.getIndex = (req, res, nxt) => {
   productModel
     .find()
     .then(products => {
-      console.log("-> products list:", products);
+      // console.log("-> products list:", products);
       res.render("shop/index", {
         pageTitle: "Shop",
         path: "/",
@@ -23,7 +23,7 @@ exports.getProducts = (req, res, nxt) => {
   productModel
     .find()
     .then(products => {
-      console.log("-> products list:", products);
+      // console.log("-> products list:", products);
       res.render("shop/product-list", {
         pageTitle: "Shop",
         path: "/products",
@@ -39,7 +39,7 @@ exports.getProduct = (req, res, nxt) => {
   productModel
     .findById(prodId)
     .then(product => {
-      console.log("-> product:", product);
+      // console.log("-> product:", product);
       res.render("shop/product-detail", {
         pageTitle: product.title,
         path: "/products",
@@ -50,9 +50,13 @@ exports.getProduct = (req, res, nxt) => {
 };
 
 exports.getCart = (req, res, nxt) => {
+  console.log("==> shopController: getCart");
   req.user
-    .getCart()
-    .then(products => {
+    .populate("cart.items.product")
+    .execPopulate()
+    .then(user => {
+      const products = user.cart.items;
+      // console.log("-> cart product list");
       res.render("shop/cart", {
         pageTitle: "Your Cart",
         path: "/cart",
@@ -63,6 +67,7 @@ exports.getCart = (req, res, nxt) => {
 };
 
 exports.postCart = (req, res, nxt) => {
+  console.log("==> shopController: postCart");
   const prodId = req.body.productId;
   productModel
     .findById(prodId)

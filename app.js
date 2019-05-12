@@ -33,7 +33,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use((req, res, nxt) => {
   console.log("-> registering user to req.user");
   userModel
-    .findById("5cd3775d4ec45c7e99869cb0")
+    .findById("5cd7ac82bec8801526ff9386")
     .then(user => {
       req.user = user;
       nxt();
