@@ -5,11 +5,11 @@ block content
         if products.length > 0
             each item in products
                 div.card.cart__details
-                    h1.cart__title #{item.product.title} 
+                    h1.cart__title #{item.productId.title} 
                     p (#{item.qnt})
                     form(action="/cart-delete-item", method="POST")
                         button.btn(type="submit") REMOVE
-                        input(type="hidden", name="productId", value= item.product._id)
+                        input(type="hidden", name="productId", value= item.productId._id)
             form(action="/create-order", method="POST")
                 button.btn(type="submit") ORDER NOW!
         else

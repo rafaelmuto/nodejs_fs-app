@@ -22,7 +22,7 @@ router.get("/cart", shopController.getCart);
 router.post("/cart", shopController.postCart);
 
 // // POST route to remove itens from cart:
-// router.post("/cart-delete-item", shopController.postCartDeleteProduct);
+router.post("/cart-delete-item", shopController.postCartDeleteProduct);
 
 // router.get("/checkout", shopController.getCheckout);
 

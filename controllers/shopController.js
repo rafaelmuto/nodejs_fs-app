@@ -52,7 +52,7 @@ exports.getProduct = (req, res, nxt) => {
 exports.getCart = (req, res, nxt) => {
   console.log("==> shopController: getCart");
   req.user
-    .populate("cart.items.product")
+    .populate("cart.items.productId")
     .execPopulate()
     .then(user => {
       const products = user.cart.items;
@@ -81,9 +81,11 @@ exports.postCart = (req, res, nxt) => {
 };
 
 exports.postCartDeleteProduct = (req, res, nxt) => {
+  console.log("==> shopController: postCartDeleteProduct");
   const prodId = req.body.productId;
+  console.log("-> removing product:", prodId);
   req.user
-    .deleteItemFromCart(prodId)
+    .removeFromCart(prodId)
     .then(result => {
       res.redirect("/cart");
     })
