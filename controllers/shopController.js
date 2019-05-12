@@ -93,13 +93,6 @@ exports.postCartDeleteProduct = (req, res, nxt) => {
     .catch(err => console.log(err));
 };
 
-exports.getCheckout = (req, res, nxt) => {
-  res.render("shop/checkout", {
-    pageTitle: "Checkout",
-    path: "/checkout"
-  });
-};
-
 exports.postOrder = (req, res, nxt) => {
   req.user
     .populate("cart.items.productId")
@@ -137,4 +130,11 @@ exports.getOrders = (req, res, nxt) => {
       });
     })
     .catch(err => console.log(err));
+};
+
+exports.getCheckout = (req, res, nxt) => {
+  res.render("shop/checkout", {
+    pageTitle: "Checkout",
+    path: "/checkout"
+  });
 };
