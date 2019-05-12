@@ -19,7 +19,7 @@ router.get("/products/:productId", shopController.getProduct);
 // router.get("/cart", shopController.getCart);
 
 // // POST route for adding products to the cart:
-// router.post("/cart", shopController.postCart);
+router.post("/cart", shopController.postCart);
 
 // // POST route to remove itens from cart:
 // router.post("/cart-delete-item", shopController.postCartDeleteProduct);
