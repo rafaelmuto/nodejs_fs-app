@@ -7,7 +7,7 @@ block content
                 div.card.cart__details
                     h1.cart__title #{order._id} 
                     ul
-                        each product in order.items
-                            li (#{product.qnt}) #{product.title}
+                        each product in order.products
+                            li (#{product.qnt}) #{product.productData.title}
         else
             h1 no orders here... 
