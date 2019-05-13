@@ -1,4 +1,6 @@
 console.log("==> starting app.js");
+const MONGODB_URI =
+  "mongodb+srv://nodeApp:12345@mdbtest-enper.gcp.mongodb.net/nodejs_app";
 
 // importing express.js and other modules:
 const express = require("express");
@@ -6,6 +8,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
 const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 // importing routes:
 const adminRoutes = require("./routes/adminRouter");
@@ -17,6 +20,8 @@ const userModel = require("./models/userModel");
 
 // creating the server(?) obj with the express() function, the function returns an obj:
 const app = express();
+// creating  new connect-mongodb-session:
+const store = new MongoDBStore({ uri: MONGODB_URI, collection: "sessions" });
 
 // ==> Middlewares:
 
@@ -33,7 +38,12 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // registering express-session middleware:
 app.use(
-  session({ secret: "qwertyuiop", resave: false, saveUninitialized: false })
+  session({
+    secret: "qwertyuiop",
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
 );
 
 // registering user in the req:
@@ -69,7 +79,7 @@ app.use((req, res, nxt) => {
 
 mongoose
   .connect(
-    "mongodb+srv://nodeApp:12345@mdbtest-enper.gcp.mongodb.net/nodejs_app?retryWrites=true",
+    MONGODB_URI,
     // warning: (node:70332) DeprecationWarning: current URL string parser is deprecated,
     // and will be removed in a future version. To use the new parser, pass option
     // { useNewUrlParser: true } to MongoClient.connect.
