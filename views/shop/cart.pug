@@ -6,7 +6,8 @@ block content
             each item in products
                 div.card.cart__details
                     h1.cart__title #{item.productId.title} 
-                    p (#{item.qnt})
+                    p productId: #{item.productId._id}
+                    p Qnt: (#{item.qnt})
                     form(action="/cart-delete-item", method="POST")
                         button.btn(type="submit") REMOVE
                         input(type="hidden", name="productId", value= item.productId._id)
