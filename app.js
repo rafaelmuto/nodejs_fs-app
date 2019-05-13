@@ -5,10 +5,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
+const session = require("express-session");
 
 // importing routes:
 const adminRoutes = require("./routes/adminRouter");
 const shopRoutes = require("./routes/shopRouter");
+const authRoutes = require("./routes/authRouter");
 
 // importing userModel:
 const userModel = require("./models/userModel");
@@ -29,6 +31,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // middleware for serving static files:
 app.use(express.static(path.join(__dirname, "public")));
 
+// registering express-session middleware:
+app.use(
+  session({ secret: "qwertyuiop", resave: false, saveUninitialized: false })
+);
+
 // registering user in the req:
 app.use((req, res, nxt) => {
   console.log("-> registering user to req.user");
@@ -46,11 +53,15 @@ app.use((req, res, nxt) => {
 // registering imported routers as middlewares:
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
+app.use(authRoutes);
 
 // catch all route for 404 errors:
 // instead of creating a whole controller you can just put your route here...
 app.use((req, res, nxt) => {
-  res.status(404).render("404", { pageTitle: "Err404 Page Not Found" });
+  res.status(404).render("404", {
+    pageTitle: "Err404 Page Not Found",
+    isAuth: req.isLoggedIn
+  });
   console.log("-> Err404 Page Not Found");
 });
 

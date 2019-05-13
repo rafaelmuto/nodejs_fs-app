@@ -221,3 +221,10 @@ main {
 .form-control textarea:focus {
   outline-color: #555;
 }
+
+.login-form {
+  width: 20rem;
+  max-width: 80%;
+  margin: auto;
+  display: block;
+}

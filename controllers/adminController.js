@@ -10,7 +10,8 @@ exports.getAddProduct = (req, res, nxt) => {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     // pug doesnt care about having or not the edit: false here:
-    edit: false
+    edit: false,
+    isAuth: req.session.isLoggedIn
   });
 };
 
@@ -62,7 +63,8 @@ exports.getEditProduct = (req, res, nxt) => {
         pageTitle: "Edit Product",
         path: "/edit-product",
         edit: editMode,
-        product: product
+        product: product,
+        isAuth: req.session.isLoggedIn
       });
     })
     .catch(err => console.log(err));
@@ -102,7 +104,8 @@ exports.getAdminProducts = (req, res, nxt) => {
       res.render("admin/products-list", {
         pageTitle: "Admin Products",
         path: "/admin/products",
-        products: products
+        products: products,
+        isAuth: req.session.isLoggedIn
       });
     })
     .catch(err => console.log(err));
