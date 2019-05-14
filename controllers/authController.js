@@ -7,12 +7,6 @@ exports.getLogin = (req, res, nxt) => {
 
 exports.postLogin = (req, res, nxt) => {
   console.log("==> authController: postLogin");
-  res.setHeader("Set=Cookie");
-  req.isLoggedIn = true;
-  res.redirect("/");
-};
-
-exports.postLogin = (req, res, nxt) => {
   req.session.isLoggedIn = true;
   res.redirect("/");
 };
