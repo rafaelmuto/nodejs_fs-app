@@ -11,12 +11,29 @@ exports.getLogin = (req, res, nxt) => {
 
 exports.postLogin = (req, res, nxt) => {
   console.log("==> authController: postLogin");
-  req.session.isLoggedIn = true;
-  res.redirect("/");
+  userModel
+    .findOne({ email: req.body.email })
+    .then(user => {
+      if (user !== null) {
+        req.session.isLoggedIn = true;
+        req.session.user = user;
+        console.log("-> registering req.session.user:", user);
+      } else {
+        req.session.isLoggedIn = false;
+        req.session.user = null;
+        console.log(" registering req.session.user:", null);
+      }
+      res.redirect("/");
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
 exports.postLogout = (req, res, nxt) => {
   console.log("===> authController: postLogout");
-  req.session.isLoggedIn = false;
-  res.redirect("/");
+  req.session.destroy(err => {
+    console.log("->", err);
+    res.redirect("/");
+  });
 };

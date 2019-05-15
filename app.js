@@ -46,18 +46,9 @@ app.use(
   })
 );
 
-// registering user in the req:
 app.use((req, res, nxt) => {
-  console.log("-> registering user to req.user");
-  userModel
-    .findById("5cd7ac82bec8801526ff9386")
-    .then(user => {
-      req.user = user;
-      nxt();
-    })
-    .catch(err => {
-      console.log(err);
-    });
+  console.log("->logged as:", req.session.user);
+  nxt();
 });
 
 // registering imported routers as middlewares:

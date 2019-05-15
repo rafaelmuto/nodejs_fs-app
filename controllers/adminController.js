@@ -28,7 +28,7 @@ exports.postAddProduct = (req, res, nxt) => {
     description: description,
     imageUrl: imageUrl,
     // mongoose will automatically get the _id from the userModel Obj:
-    userId: req.user
+    userId: req.session.user
   });
 
   product
@@ -100,7 +100,7 @@ exports.getAdminProducts = (req, res, nxt) => {
     .find()
     // .populate("userId")
     .then(products => {
-      console.log("-> products list:", products);
+      // console.log("-> products list:", products);
       res.render("admin/products-list", {
         pageTitle: "Admin Products",
         path: "/admin/products",
