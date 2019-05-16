@@ -17,13 +17,16 @@ exports.postLogin = (req, res, nxt) => {
       if (user !== null) {
         req.session.isLoggedIn = true;
         req.session.user = user;
-        console.log("-> registering req.session.user:", user);
+        req.session.save(err => {
+          console.log("-> registering req.session.user:", user);
+          res.redirect("/");
+        });
       } else {
         req.session.isLoggedIn = false;
         req.session.user = null;
         console.log(" registering req.session.user:", null);
+        res.redirect("/");
       }
-      res.redirect("/");
     })
     .catch(err => {
       console.log(err);
