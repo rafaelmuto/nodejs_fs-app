@@ -28,7 +28,7 @@ exports.postAddProduct = (req, res, nxt) => {
     description: description,
     imageUrl: imageUrl,
     // mongoose will automatically get the _id from the userModel Obj:
-    userId: req.session.user
+    userId: req.user
   });
 
   product

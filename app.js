@@ -47,8 +47,21 @@ app.use(
 );
 
 app.use((req, res, nxt) => {
-  console.log("->logged as:", req.session.user);
-  nxt();
+  console.log("-> logged as:", req.session.user);
+  if (req.session.user) {
+    userModel
+      .findById(req.session.user)
+      .then(user => {
+        req.user = user;
+        console.log("-> req.user:", user);
+        nxt();
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  } else {
+    nxt();
+  }
 });
 
 // registering imported routers as middlewares:
