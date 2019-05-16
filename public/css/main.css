@@ -181,7 +181,7 @@ main {
   height: auto;
   padding: 1rem;
   display: grid;
-  grid-template-columns: 50% auto;
+  grid-template-columns: 60% auto;
 }
 
 .order__details ul {

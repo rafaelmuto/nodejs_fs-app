@@ -29,5 +29,6 @@ html(lang="en")
                                 button.btn(type="submit") Logout
                     else
                         li.main-header__item
-                            a(href="/login", class=(path==='/login'?'active':'')) Login
+                            form.login-form(action='/login' method="GET")
+                                button.btn(type="submit") Login
         block content
