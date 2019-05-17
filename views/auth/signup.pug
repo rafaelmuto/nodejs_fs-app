@@ -1,0 +1,16 @@
+extend ../layouts/main-layout.pug
+
+block styles
+block content
+    main
+        form.login-form(action="/signup" method="POST")
+            .form-control 
+                label(for="email") E-Mail:
+                input(type="email" name="email" id="email")
+            .form-control
+                label(for="password") Password:
+                input(type="password" name="password" id="password")
+            .form-control
+                label(for="confirmPassword") Confirm Password:
+                input(type="password" name="confirmPassword" id="confirmPassword")
+            button.btn(type="submit") Sign-Up

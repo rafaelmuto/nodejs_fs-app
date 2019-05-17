@@ -34,9 +34,22 @@ exports.postLogin = (req, res, nxt) => {
 };
 
 exports.postLogout = (req, res, nxt) => {
-  console.log("===> authController: postLogout");
+  console.log("==> authController: postLogout");
   req.session.destroy(err => {
     console.log("->", err);
     res.redirect("/");
   });
+};
+
+exports.getSignup = (req, res, nxt) => {
+  console.log("==> authController: getSignup");
+  res.render("/auth/signup", {
+    path: "/signup",
+    pageTitle: "Sign-Up",
+    isAuth: req.session.isLoggedIn
+  });
+};
+
+exports.postSignup = (req, res, nxt) => {
+  console.log("==> authController: postSignup");
 };
