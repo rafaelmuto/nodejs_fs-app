@@ -43,7 +43,7 @@ exports.postLogout = (req, res, nxt) => {
 
 exports.getSignup = (req, res, nxt) => {
   console.log("==> authController: getSignup");
-  res.render("/auth/signup", {
+  res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Sign-Up",
     isAuth: req.session.isLoggedIn

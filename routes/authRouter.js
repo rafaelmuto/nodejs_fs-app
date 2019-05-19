@@ -19,4 +19,5 @@ router.get("/signup", authController.getSignup);
 
 // POST route to process the signup info
 router.post("/signup", authController.postSignup);
+
 module.exports = router;
