@@ -1,3 +1,6 @@
+// importing bcrypt pack:
+const bcrypt = require("bcryptjs");
+
 const userModel = require("../models/userModel");
 
 exports.getLogin = (req, res, nxt) => {
@@ -67,15 +70,20 @@ exports.postSignup = (req, res, nxt) => {
         console.log("-> passwords don't match");
         return res.redirect("/signup");
       }
-      const newUser = new userModel({
-        email: email,
-        password: password,
-        cart: { items: [] }
-      });
-      return newUser.save();
-    })
-    .then(result => {
-      res.redirect("/login");
+
+      return bcrypt
+        .hash(password, 12)
+        .then(hashedPassword => {
+          const newUser = new userModel({
+            email: email,
+            password: hashedPassword,
+            cart: { items: [] }
+          });
+          return newUser.save();
+        })
+        .then(result => {
+          res.redirect("/login");
+        });
     })
     .catch(err => {
       console.log(err);
