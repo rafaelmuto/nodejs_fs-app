@@ -52,4 +52,32 @@ exports.getSignup = (req, res, nxt) => {
 
 exports.postSignup = (req, res, nxt) => {
   console.log("==> authController: postSignup");
+  const email = req.body.email;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+
+  userModel
+    .findOne({ email: email })
+    .then(user => {
+      if (user) {
+        console.log("-> email already exists");
+        return res.redirect("/signup");
+      }
+      if (password !== confirmPassword) {
+        console.log("-> passwords don't match");
+        return res.redirect("/signup");
+      }
+      const newUser = new userModel({
+        email: email,
+        password: password,
+        cart: { items: [] }
+      });
+      return newUser.save();
+    })
+    .then(result => {
+      res.redirect("/login");
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };

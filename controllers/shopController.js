@@ -107,7 +107,7 @@ exports.postOrder = (req, res, nxt) => {
       });
       const order = new orderModel({
         user: {
-          name: req.user.name,
+          name: req.user.email,
           userId: req.user
         },
         products: products

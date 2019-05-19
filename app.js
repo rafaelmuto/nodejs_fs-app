@@ -92,21 +92,6 @@ mongoose
   )
   .then(result => {
     console.log("==> mongoose connected!");
-
-    userModel.findOne().then(user => {
-      if (!user) {
-        const user = new userModel({
-          name: "rafaelmuto",
-          email: "r.nagahama@gmail.com",
-          cart: {
-            items: []
-          }
-        });
-        console.log("-> creating test user:", user);
-        user.save();
-      }
-    });
-
     console.log("-> starting server listen");
     app.listen(3000);
   })
