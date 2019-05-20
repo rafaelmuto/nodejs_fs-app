@@ -7,8 +7,7 @@ exports.getLogin = (req, res, nxt) => {
   console.log("==> authController: getLogin");
   res.render("auth/login", {
     path: "/login",
-    pageTitle: "Login",
-    isAuth: req.session.isLoggedIn
+    pageTitle: "Login"
   });
 };
 

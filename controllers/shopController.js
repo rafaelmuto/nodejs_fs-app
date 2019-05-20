@@ -28,8 +28,7 @@ exports.getProducts = (req, res, nxt) => {
       res.render("shop/product-list", {
         pageTitle: "Shop",
         path: "/products",
-        products: products,
-        isAuth: req.session.isLoggedIn
+        products: products
       });
     })
     .catch(err => console.log(err));
@@ -45,8 +44,7 @@ exports.getProduct = (req, res, nxt) => {
       res.render("shop/product-detail", {
         pageTitle: product.title,
         path: "/products",
-        product: product,
-        isAuth: req.session.isLoggedIn
+        product: product
       });
     })
     .catch(err => console.log(err));
@@ -63,8 +61,7 @@ exports.getCart = (req, res, nxt) => {
       res.render("shop/cart", {
         pageTitle: "Your Cart",
         path: "/cart",
-        products: products,
-        isAuth: req.session.isLoggedIn
+        products: products
       });
     })
     .catch(err => console.log(err));
@@ -129,8 +126,7 @@ exports.getOrders = (req, res, nxt) => {
       res.render("shop/orders", {
         pageTitle: "Your Orders",
         path: "/orders",
-        orders: orders,
-        isAuth: req.session.isLoggedIn
+        orders: orders
       });
     })
     .catch(err => console.log(err));
@@ -139,7 +135,6 @@ exports.getOrders = (req, res, nxt) => {
 exports.getCheckout = (req, res, nxt) => {
   res.render("shop/checkout", {
     pageTitle: "Checkout",
-    path: "/checkout",
-    isAuth: req.session.isLoggedIn
+    path: "/checkout"
   });
 };
