@@ -6,6 +6,9 @@ const router = express.Router();
 // importing controllers:
 const shopController = require("../controllers/shopController.js");
 
+// importing isAuth middleware:
+const isAuth = require("../middleware/isAuth");
+
 // GET route for the first page:
 router.get("/", shopController.getIndex);
 
@@ -16,19 +19,19 @@ router.get("/products", shopController.getProducts);
 router.get("/products/:productId", shopController.getProduct);
 
 // // GET route for getting to the cart list:
-router.get("/cart", shopController.getCart);
+router.get("/cart", isAuth, shopController.getCart);
 
 // // POST route for adding products to the cart:
-router.post("/cart", shopController.postCart);
+router.post("/cart", isAuth, shopController.postCart);
 
 // // POST route to remove itens from cart:
-router.post("/cart-delete-item", shopController.postCartDeleteProduct);
+router.post("/cart-delete-item", isAuth, shopController.postCartDeleteProduct);
 
 // POST route for creating an order from the current user cart:
-router.post("/create-order", shopController.postOrder);
+router.post("/create-order", isAuth, shopController.postOrder);
 
 // GET route to view all orders from the current user:
-router.get("/orders", shopController.getOrders);
+router.get("/orders", isAuth, shopController.getOrders);
 
 // router.get("/checkout", shopController.getCheckout);
 
