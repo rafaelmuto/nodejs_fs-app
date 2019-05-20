@@ -18,13 +18,13 @@ router.get("/products", shopController.getProducts);
 // GET route for getting to the product details page:
 router.get("/products/:productId", shopController.getProduct);
 
-// // GET route for getting to the cart list:
+// GET route for getting to the cart list:
 router.get("/cart", isAuth, shopController.getCart);
 
-// // POST route for adding products to the cart:
+// POST route for adding products to the cart:
 router.post("/cart", isAuth, shopController.postCart);
 
-// // POST route to remove itens from cart:
+// POST route to remove itens from cart:
 router.post("/cart-delete-item", isAuth, shopController.postCartDeleteProduct);
 
 // POST route for creating an order from the current user cart:
