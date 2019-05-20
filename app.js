@@ -71,6 +71,13 @@ app.use((req, res, nxt) => {
   }
 });
 
+// setting local variables to all redered views:
+app.use((req, res, nxt) => {
+  res.locals.isAuth = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  nxt();
+});
+
 // registering imported routers as middlewares:
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);

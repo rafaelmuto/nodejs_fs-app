@@ -4,6 +4,7 @@ block content
     main
         form.product-form(action= edit?'/admin/edit-product':'/admin/add-product', method="POST")
             .form-control
+                input(type="hidden" name="_csrf" value=csrfToken)
                 label(for="title") Title
                 input(type="text", name="title", id="title", value= edit?product.title:'')
                 label(for="title") ImageURL

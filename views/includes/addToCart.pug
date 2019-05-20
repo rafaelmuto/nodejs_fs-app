@@ -2,3 +2,4 @@ if isAuth
     form(action="/cart", method="POST")
         input(type="hidden", name="productId", value=product._id)
         button.btn(type="submit") Add to Cart
+        input(type="hidden" name="_csrf" value=csrfToken)

@@ -12,6 +12,7 @@ block content
                         button.btn(type="submit") REMOVE
                         input(type="hidden", name="productId", value= item.productId._id)
             form(action="/create-order", method="POST")
+                input(type="hidden" name="_csrf" value=csrfToken)
                 button.btn(type="submit") ORDER NOW!
         else
             h1 cart is empty...

@@ -9,4 +9,5 @@ block content
                 input(type="text", name="email", id="email")
                 label(for="password") Password:
                 input(type="password", name="password", id="password")
+                input(type="hidden" name="_csrf" value=csrfToken)
             button.btn(type="submit") Login
