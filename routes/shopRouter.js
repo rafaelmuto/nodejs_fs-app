@@ -7,7 +7,7 @@ const router = express.Router();
 const shopController = require("../controllers/shopController.js");
 
 // importing isAuth middleware:
-const isAuth = require("../middleware/isAuth");
+const isAuth = require("../middlewares/isAuth");
 
 // GET route for the first page:
 router.get("/", shopController.getIndex);

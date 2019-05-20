@@ -7,7 +7,7 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 
 // importing isAuth middleware:
-const isAuth = require("../middleware/isAuth");
+const isAuth = require("../middlewares/isAuth");
 
 // GET route to display the list of products of a user:
 router.get("/products", isAuth, adminController.getAdminProducts);
