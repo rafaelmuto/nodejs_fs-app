@@ -9,6 +9,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
 
 // importing routes:
 const adminRoutes = require("./routes/adminRouter");
@@ -22,6 +23,8 @@ const userModel = require("./models/userModel");
 const app = express();
 // creating  new connect-mongodb-session:
 const store = new MongoDBStore({ uri: MONGODB_URI, collection: "sessions" });
+// initialising CSRF protection (csruf):
+const csrfProtection = csrf();
 
 // ==> Middlewares:
 
@@ -45,6 +48,9 @@ app.use(
     store: store
   })
 );
+
+// registering csurf middleware:
+app.use(csrfProtection);
 
 // this middleware registers the userModel obj to the req:
 app.use((req, res, nxt) => {

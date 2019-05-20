@@ -14,7 +14,8 @@ exports.getIndex = (req, res, nxt) => {
         pageTitle: "Shop",
         path: "/",
         products: products,
-        isAuth: req.session.isLoggedIn
+        isAuth: req.session.isLoggedIn,
+        csrfToken: req.csrfToken()
       });
     })
     .catch(err => console.log(err));
