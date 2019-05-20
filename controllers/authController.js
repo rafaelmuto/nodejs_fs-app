@@ -14,20 +14,34 @@ exports.getLogin = (req, res, nxt) => {
 
 exports.postLogin = (req, res, nxt) => {
   console.log("==> authController: postLogin");
+  const email = req.body.email;
+  const password = req.body.password;
   userModel
-    .findOne({ email: req.body.email })
+    .findOne({ email: email })
     .then(user => {
       if (user !== null) {
-        req.session.isLoggedIn = true;
-        req.session.user = user;
-        req.session.save(err => {
-          console.log("-> registering req.session.user:", user);
-          res.redirect("/");
-        });
+        bcrypt
+          .compare(password, user.password)
+          .then(match => {
+            if (match) {
+              req.session.isLoggedIn = true;
+              req.session.user = user;
+              req.session.save(err => {
+                console.log("-> registering req.session.user:", user);
+                res.redirect("/");
+              });
+            } else {
+              res.redirect("/login");
+            }
+          })
+          .catch(err => {
+            console.log(err);
+            res.redirect("/login");
+          });
       } else {
         req.session.isLoggedIn = false;
         req.session.user = null;
-        console.log(" registering req.session.user:", null);
+        console.log(" registering req.session.user: fail");
         res.redirect("/");
       }
     })
