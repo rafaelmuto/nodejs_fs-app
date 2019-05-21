@@ -222,9 +222,25 @@ main {
   outline-color: #555;
 }
 
+/* LOGIN */
+
 .login-form {
   width: 20rem;
   max-width: 80%;
   margin: auto;
   display: block;
+}
+
+.user-message {
+  margin: auto;
+  padding: 0.5rem;
+  border-radius: 0.2rem;
+  width: 50%;
+  border: 1px solid black;
+  text-align: center;
+}
+
+.user-message--error {
+  border-color: red;
+  color: red;
 }

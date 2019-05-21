@@ -5,9 +5,16 @@ const userModel = require("../models/userModel");
 
 exports.getLogin = (req, res, nxt) => {
   console.log("==> authController: getLogin");
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render("auth/login", {
     path: "/login",
-    pageTitle: "Login"
+    pageTitle: "Login",
+    errorMessage: message
   });
 };
 
@@ -30,6 +37,7 @@ exports.postLogin = (req, res, nxt) => {
                 res.redirect("/");
               });
             } else {
+              req.flash("error", "Password invalid...");
               res.redirect("/login");
             }
           })
@@ -41,7 +49,8 @@ exports.postLogin = (req, res, nxt) => {
         req.session.isLoggedIn = false;
         req.session.user = null;
         console.log(" registering req.session.user: fail");
-        res.redirect("/");
+        req.flash("error", "Invalid email...");
+        res.redirect("/login");
       }
     })
     .catch(err => {
@@ -59,10 +68,17 @@ exports.postLogout = (req, res, nxt) => {
 
 exports.getSignup = (req, res, nxt) => {
   console.log("==> authController: getSignup");
+  let message = req.flash("error");
+  if (message.length > 0) {
+    message = message[0];
+  } else {
+    message = null;
+  }
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Sign-Up",
-    isAuth: req.session.isLoggedIn
+    isAuth: req.session.isLoggedIn,
+    errorMessage: message
   });
 };
 
@@ -77,10 +93,12 @@ exports.postSignup = (req, res, nxt) => {
     .then(user => {
       if (user) {
         console.log("-> email already exists");
+        req.flash("error", "this e-mail already exists!");
         return res.redirect("/signup");
       }
       if (password !== confirmPassword) {
         console.log("-> passwords don't match");
+        req.flash("error", "passwords don`t match!");
         return res.redirect("/signup");
       }
 

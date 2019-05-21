@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
+const flash = require("connect-flash");
 
 // importing routes:
 const adminRoutes = require("./routes/adminRouter");
@@ -51,6 +52,9 @@ app.use(
 
 // registering csurf middleware:
 app.use(csrfProtection);
+
+// registering connect-flash:
+app.use(flash());
 
 // this middleware registers the userModel obj to the req:
 app.use((req, res, nxt) => {
