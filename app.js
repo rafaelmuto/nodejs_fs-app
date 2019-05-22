@@ -1,6 +1,9 @@
 console.log("==> starting app.js");
-const MONGODB_URI =
-  "mongodb+srv://nodeApp:12345@mdbtest-enper.gcp.mongodb.net/nodejs_app";
+
+// importing credencials:
+const CRED = require("./credencials");
+
+const MONGODB_URI = CRED.MONGODB_URI;
 
 // importing express.js and other modules:
 const express = require("express");
