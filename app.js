@@ -1,9 +1,9 @@
 console.log("==> starting app.js");
 
-// importing credencials:
-const CRED = require("./credencials");
+// importing credencials & settings:
+const SETUP = require("./SETUP");
 
-const MONGODB_URI = CRED.MONGODB_URI;
+const MONGODB_URI = SETUP.MONGODB_URI;
 
 // importing express.js and other modules:
 const express = require("express");
@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // registering express-session middleware:
 app.use(
   session({
-    secret: "qwertyuiop",
+    secret: SETUP.EXPSESS_SECRET,
     resave: false,
     saveUninitialized: false,
     store: store
@@ -113,7 +113,7 @@ mongoose
   .then(result => {
     console.log("==> mongoose connected!");
     console.log("-> starting server listen");
-    app.listen(3000);
+    app.listen(SETUP.SERVER_PORT);
   })
   .catch(err => {
     console.log(err);
