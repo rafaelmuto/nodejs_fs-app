@@ -1,7 +1,20 @@
 // importing bcrypt pack:
 const bcrypt = require("bcryptjs");
+// importing nodemailer and nodemailer-sendgrid-transport:
+const nodemailer = require("nodemailer");
+const sendgridTransport = require("nodemailer-sendgrid-transport");
 
 const userModel = require("../models/userModel");
+
+// initialising nodemailer
+const transporter = nodemailer.createTransport(
+  sendgridTransport({
+    auth: {
+      api_key:
+        "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"
+    }
+  })
+);
 
 exports.getLogin = (req, res, nxt) => {
   console.log("==> authController: getLogin");
@@ -113,7 +126,17 @@ exports.postSignup = (req, res, nxt) => {
           return newUser.save();
         })
         .then(result => {
+          console.log("-> signup successfull, sending email...");
           res.redirect("/login");
+          return transporter.sendMail({
+            to: email,
+            from: "nodejs_app@nodejs.app",
+            subject: "Sign up succeeded!",
+            html: "<h1>  You successfully signed up! </h1>"
+          });
+        })
+        .catch(err => {
+          console.log(err);
         });
     })
     .catch(err => {
