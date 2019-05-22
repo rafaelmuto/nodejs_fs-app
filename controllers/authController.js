@@ -5,7 +5,7 @@ const nodemailer = require("nodemailer");
 const sendgridTransport = require("nodemailer-sendgrid-transport");
 
 // importing credencials and settings:
-const SETUP = require("../SETUP");
+const SETUP = require("../setup");
 
 const userModel = require("../models/userModel");
 

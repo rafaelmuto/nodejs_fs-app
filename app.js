@@ -1,7 +1,7 @@
 console.log("==> starting app.js");
 
 // importing credencials & settings:
-const SETUP = require("./SETUP");
+const SETUP = require("./setup");
 
 const MONGODB_URI = SETUP.MONGODB_URI;
 
