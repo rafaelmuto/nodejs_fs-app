@@ -10,5 +10,5 @@ module.exports.SENDGRID_APIKEY = "api_key_here";
 // express-session secret:
 module.exports.EXPSESS_SECRET = "secret_word_here";
 
-// server port listem:
+// express server port listem:
 module.exports.SERVER_PORT = 3000;
