@@ -111,8 +111,8 @@ mongoose
     { useNewUrlParser: true }
   )
   .then(result => {
-    console.log("==> mongoose connected!");
-    console.log("-> starting server listen");
+    console.log("=> mongoose connected!");
+    console.log("-> starting server listen @ port:", SETUP.SERVER_PORT);
     app.listen(SETUP.SERVER_PORT);
   })
   .catch(err => {
