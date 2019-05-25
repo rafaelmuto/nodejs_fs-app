@@ -68,7 +68,6 @@ app.use((req, res, nxt) => {
       .findById(req.session.user)
       .then(user => {
         req.user = user;
-        console.log("-> req.user:", user);
         nxt();
       })
       .catch(err => {
