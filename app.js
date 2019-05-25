@@ -61,6 +61,7 @@ app.use(flash());
 
 // this middleware registers the userModel obj to the req:
 app.use((req, res, nxt) => {
+  console.log("==> app: Registering User (req.user)");
   console.log("-> logged as:", req.session.user);
   if (req.session.user) {
     userModel
