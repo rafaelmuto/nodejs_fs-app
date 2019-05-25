@@ -20,4 +20,10 @@ router.get("/signup", authController.getSignup);
 // POST route to process the signup info
 router.post("/signup", authController.postSignup);
 
+// GET route for reset password
+router.get("/reset", authController.getReset);
+
+// POST route for reset password
+router.post("/reset", authController.postReset);
+
 module.exports = router;
