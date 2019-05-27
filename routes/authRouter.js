@@ -26,4 +26,10 @@ router.get("/reset", authController.getReset);
 // POST route for reset password
 router.post("/reset", authController.postReset);
 
+// GET route for new-password email link
+router.get("/reset/:token", authController.getNewPassword);
+
+// POST route for new-password
+router.post("/new-password", authController.postNewPassword);
+
 module.exports = router;
