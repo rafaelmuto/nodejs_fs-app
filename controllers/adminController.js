@@ -79,7 +79,7 @@ exports.postEditProduct = (req, res, nxt) => {
   productModel
     .findById(prodId)
     .then(product => {
-      if (product.userId !== req.user._id) {
+      if (product.userId.toString() !== req.user._id.toString()) {
         console.log("-> wrong userId...");
         return res.redirect("/");
       }
