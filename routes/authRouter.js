@@ -1,5 +1,8 @@
 const express = require("express");
 
+// importing express-validator:
+const { check } = require("express-validator/check");
+
 const authController = require("../controllers/authController");
 
 // creating router obj with express.Router() function, the function returns an obj:
@@ -18,7 +21,13 @@ router.post("/logout", authController.postLogout);
 router.get("/signup", authController.getSignup);
 
 // POST route to process the signup info
-router.post("/signup", authController.postSignup);
+router.post(
+  "/signup",
+  check("email")
+    .isEmail()
+    .withMessage("Please enter a valid e-mail"),
+  authController.postSignup
+);
 
 // GET route for reset password
 router.get("/reset", authController.getReset);
