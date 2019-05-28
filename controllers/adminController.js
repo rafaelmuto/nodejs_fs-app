@@ -79,23 +79,27 @@ exports.postEditProduct = (req, res, nxt) => {
   productModel
     .findById(prodId)
     .then(product => {
+      if (product.userId !== req.user._id) {
+        console.log("-> wrong userId...");
+        return res.redirect("/");
+      }
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDescription;
       product.imageUrl = updatedImageUrl;
 
       console.log("-> diplaying product:", product);
-
-      return product.save();
+      return product.save().then(result => {
+        res.redirect("/admin/products");
+      });
     })
     .catch(err => console.log(err));
-  res.redirect("/admin/products");
 };
 
 exports.getAdminProducts = (req, res, nxt) => {
   console.log("==> adminController: getAdminProducts");
   productModel
-    .find()
+    .find({ userId: req.user._id })
     // .populate("userId")
     .then(products => {
       // console.log("-> products list:", products);
@@ -112,7 +116,7 @@ exports.postDeleteProduct = (req, res, nxt) => {
   console.log("==> adminController: postDeleteProduct");
   const prodId = req.body.productId;
   productModel
-    .findByIdAndDelete(prodId)
+    .deleteOne({ _id: prodId, userId: req.user._id })
     .then(() => {
       console.log("-> product deleted:", prodId);
       res.redirect("/admin/products");
