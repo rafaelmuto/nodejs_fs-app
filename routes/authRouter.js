@@ -2,8 +2,10 @@ const express = require("express");
 
 // importing express-validator:
 const { check, body } = require("express-validator/check");
-
+// importing authController:
 const authController = require("../controllers/authController");
+// importing userModel:
+const userModel = require("../models/userModel");
 
 // creating router obj with express.Router() function, the function returns an obj:
 const router = express.Router();
@@ -25,7 +27,14 @@ router.post(
   "/signup",
   check("email")
     .isEmail()
-    .withMessage("Please enter a valid e-mail"),
+    .withMessage("Please enter a valid e-mail")
+    .custom((value, { req }) => {
+      return userModel.findOne({ email: value }).then(userDoc => {
+        if (userDoc) {
+          return Promise.reject("This e-mail is already registered!");
+        }
+      });
+    }),
   body("password")
     .isLength({ min: 5 })
     .withMessage("Please enter a valid password with at least 5 characters")
