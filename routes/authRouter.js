@@ -26,11 +26,17 @@ router.post(
   check("email")
     .isEmail()
     .withMessage("Please enter a valid e-mail"),
-  check("password")
+  body("password")
     .isLength({ min: 5 })
     .withMessage("Please enter a valid password with at least 5 characters")
     .isAlphanumeric()
     .withMessage("Please enter a valid password with only numbers and letters"),
+  body("confirmPassword").custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error("Passwords don`t match");
+    }
+    return true;
+  }),
   authController.postSignup
 );
 
