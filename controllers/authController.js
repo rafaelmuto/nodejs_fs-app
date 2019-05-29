@@ -119,6 +119,7 @@ exports.postSignup = (req, res, nxt) => {
   userModel
     .findOne({ email: email })
     .then(user => {
+      // controller validation:
       if (user) {
         console.log("-> email already exists");
         req.flash("error", "this e-mail already exists!");
