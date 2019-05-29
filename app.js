@@ -3,8 +3,6 @@ console.log("==> starting app.js");
 // importing credencials & settings:
 const SETUP = require("./setup");
 
-const MONGODB_URI = SETUP.MONGODB_URI;
-
 // importing express.js and other modules:
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -23,11 +21,14 @@ const authRoutes = require("./routes/authRouter");
 // importing userModel:
 const userModel = require("./models/userModel");
 
-// creating the server(?) obj with the express() function, the function returns an obj:
+// creating the server(?) obj with the express():
 const app = express();
 // creating  new connect-mongodb-session:
-const store = new MongoDBStore({ uri: MONGODB_URI, collection: "sessions" });
-// initialising CSRF protection (csruf):
+const store = new MongoDBStore({
+  uri: SETUP.MONGODB_URI,
+  collection: "sessions"
+});
+// initialising CSRF protection (csurf):
 const csrfProtection = csrf();
 
 // ==> Middlewares:
@@ -68,12 +69,10 @@ app.use((req, res, nxt) => {
       .findById(req.session.user)
       .then(user => {
         req.user = user;
-        nxt();
       })
       .catch(err => console.log(err));
-  } else {
-    nxt();
   }
+  nxt();
 });
 
 // setting local variables to all redered views:
@@ -83,7 +82,7 @@ app.use((req, res, nxt) => {
   nxt();
 });
 
-// registering imported routers as middlewares:
+// registering routes as middlewares:
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
@@ -92,17 +91,15 @@ app.use(authRoutes);
 // instead of creating a whole controller you can just put your route here...
 app.use((req, res, nxt) => {
   res.status(404).render("404", {
-    pageTitle: "Err404 Page Not Found",
-    isAuth: req.isLoggedIn
+    pageTitle: "Err404 Page Not Found"
   });
   console.log("-> Err404 Page Not Found");
 });
 
 // ==> Connecting to the database and Starting app.server:
-
 mongoose
   .connect(
-    MONGODB_URI,
+    SETUP.MONGODB_URI,
     // warning: (node:70332) DeprecationWarning: current URL string parser is deprecated,
     // and will be removed in a future version. To use the new parser, pass option
     // { useNewUrlParser: true } to MongoClient.connect.
