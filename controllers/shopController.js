@@ -76,9 +76,7 @@ exports.postCart = (req, res, nxt) => {
       req.user.addToCart(product);
       res.redirect("/cart");
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(err => console.log(err));
 };
 
 exports.postCartDeleteProduct = (req, res, nxt) => {

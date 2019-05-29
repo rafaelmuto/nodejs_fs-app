@@ -70,9 +70,7 @@ app.use((req, res, nxt) => {
         req.user = user;
         nxt();
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => console.log(err));
   } else {
     nxt();
   }
@@ -115,6 +113,4 @@ mongoose
     console.log("-> starting server listen @ port:", SETUP.SERVER_PORT);
     app.listen(SETUP.SERVER_PORT);
   })
-  .catch(err => {
-    console.log(err);
-  });
+  .catch(err => console.log(err));

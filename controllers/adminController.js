@@ -37,9 +37,7 @@ exports.postAddProduct = (req, res, nxt) => {
       console.log("-> new product added");
       res.redirect("/admin/products");
     })
-    .catch(err => {
-      console.log(err);
-    });
+    .catch(err => console.log(err));
 };
 
 exports.getEditProduct = (req, res, nxt) => {
