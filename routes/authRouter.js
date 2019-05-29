@@ -20,12 +20,17 @@ router.post("/logout", authController.postLogout);
 // GET route for signup
 router.get("/signup", authController.getSignup);
 
-// POST route to process the signup info
+// POST route to process the signup info using validators
 router.post(
   "/signup",
   check("email")
     .isEmail()
     .withMessage("Please enter a valid e-mail"),
+  check("password")
+    .isLength({ min: 5 })
+    .withMessage("Please enter a valid password with at least 5 characters")
+    .isAlphanumeric()
+    .withMessage("Please enter a valid password with only numbers and letters"),
   authController.postSignup
 );
 
