@@ -40,6 +40,18 @@ exports.getLogin = (req, res, nxt) => {
 
 exports.postLogin = (req, res, nxt) => {
   console.log("==> authController: postLogin");
+
+  // router validation response:
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log("-> validation error!", errors.array());
+    return res.status(422).render("auth/login", {
+      path: "/login",
+      pageTitle: "Login",
+      errorMessage: errors.array()[0].msg
+    });
+  }
+
   const email = req.body.email;
   const password = req.body.password;
   userModel
@@ -105,8 +117,9 @@ exports.postSignup = (req, res, nxt) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
-  const errors = validationResult(req);
 
+  // router validation response
+  const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log("-> validation error!", errors.array());
     return res.status(422).render("auth/signup", {

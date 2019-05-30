@@ -6,6 +6,8 @@ const { check, body } = require("express-validator/check");
 const authController = require("../controllers/authController");
 // importing userModel:
 const userModel = require("../models/userModel");
+// importing bcrypt:
+const bcrypt = require("bcryptjs");
 
 // creating router obj with express.Router() function, the function returns an obj:
 const router = express.Router();
@@ -13,8 +15,19 @@ const router = express.Router();
 // GET route for login page
 router.get("/login", authController.getLogin);
 
-// POST route to deal with data from the login page
-router.post("/login", authController.postLogin);
+// POST route to deal with data from the login page using validators
+router.post(
+  "/login",
+  body("email")
+    .isEmail()
+    .withMessage("Please enter a valid e-mail address"),
+  body("password")
+    .isLength({ min: 5 })
+    .withMessage("Please enter a valid password with at least 5 characters")
+    .isAlphanumeric()
+    .withMessage("Please enter a valid password with only numbers and letters"),
+  authController.postLogin
+);
 
 // POST route to logout
 router.post("/logout", authController.postLogout);
