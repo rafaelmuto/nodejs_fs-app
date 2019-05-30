@@ -8,12 +8,12 @@ block content
         form.login-form(action="/signup" method="POST")
             .form-control 
                 label(for="email") E-Mail:
-                input(type="email" name="email" id="email")
+                input(type="email" name="email" id="email" value=errorMessage?oldInput.email:'')
             .form-control
                 label(for="password") Password:
-                input(type="password" name="password" id="password")
+                input(type="password" name="password" id="password" value=errorMessage?oldInput.password:'')
             .form-control
                 label(for="confirmPassword") Confirm Password:
-                input(type="password" name="confirmPassword" id="confirmPassword")
+                input(type="password" name="confirmPassword" id="confirmPassword" value=errorMessage?oldInput.confirmPassword:'')
             input(type="hidden" name="_csrf" value=csrfToken)
             button.btn(type="submit") Sign-Up

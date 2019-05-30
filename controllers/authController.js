@@ -40,6 +40,8 @@ exports.getLogin = (req, res, nxt) => {
 
 exports.postLogin = (req, res, nxt) => {
   console.log("==> authController: postLogin");
+  const email = req.body.email;
+  const password = req.body.password;
 
   // router validation response:
   const errors = validationResult(req);
@@ -48,12 +50,11 @@ exports.postLogin = (req, res, nxt) => {
     return res.status(422).render("auth/login", {
       path: "/login",
       pageTitle: "Login",
-      errorMessage: errors.array()[0].msg
+      errorMessage: errors.array()[0].msg,
+      oldInput: { email: email }
     });
   }
 
-  const email = req.body.email;
-  const password = req.body.password;
   userModel
     .findOne({ email: email })
     .then(user => {
@@ -125,7 +126,12 @@ exports.postSignup = (req, res, nxt) => {
     return res.status(422).render("auth/signup", {
       path: "/signup",
       pageTitle: "Signup",
-      errorMessage: errors.array()[0].msg
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword
+      }
     });
   }
 
