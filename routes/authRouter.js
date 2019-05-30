@@ -20,12 +20,14 @@ router.post(
   "/login",
   body("email")
     .isEmail()
-    .withMessage("Please enter a valid e-mail address"),
+    .withMessage("Please enter a valid e-mail address")
+    .normalizeEmail(),
   body("password")
     .isLength({ min: 5 })
     .withMessage("Please enter a valid password with at least 5 characters")
     .isAlphanumeric()
-    .withMessage("Please enter a valid password with only numbers and letters"),
+    .withMessage("Please enter a valid password with only numbers and letters")
+    .trim(),
   authController.postLogin
 );
 
@@ -47,18 +49,22 @@ router.post(
           return Promise.reject("This e-mail is already registered!");
         }
       });
-    }),
+    })
+    .normalizeEmail(),
   body("password")
     .isLength({ min: 5 })
     .withMessage("Please enter a valid password with at least 5 characters")
     .isAlphanumeric()
-    .withMessage("Please enter a valid password with only numbers and letters"),
-  body("confirmPassword").custom((value, { req }) => {
-    if (value !== req.body.password) {
-      throw new Error("Passwords don`t match");
-    }
-    return true;
-  }),
+    .withMessage("Please enter a valid password with only numbers and letters")
+    .trim(),
+  body("confirmPassword")
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        throw new Error("Passwords don`t match");
+      }
+      return true;
+    })
+    .trim(),
   authController.postSignup
 );
 
