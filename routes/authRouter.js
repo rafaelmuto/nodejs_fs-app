@@ -6,8 +6,6 @@ const { check, body } = require("express-validator/check");
 const authController = require("../controllers/authController");
 // importing userModel:
 const userModel = require("../models/userModel");
-// importing bcrypt:
-const bcrypt = require("bcryptjs");
 
 // creating router obj with express.Router() function, the function returns an obj:
 const router = express.Router();
