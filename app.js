@@ -63,16 +63,21 @@ app.use(flash());
 // this middleware registers the userModel obj to the req:
 app.use((req, res, nxt) => {
   console.log("==> app: Registering User (req.user)");
-  console.log("-> logged as:", req.session.user);
+  console.log("-> req.session.user:", req.session.user._id);
   if (req.session.user) {
     userModel
       .findById(req.session.user)
       .then(user => {
         req.user = user;
+        console.log("-> req.user._id:", req.user._id);
+        nxt();
       })
       .catch(err => console.log(err));
+  } else {
+    console.log("-> no user...");
+    req.user = null;
+    nxt();
   }
-  nxt();
 });
 
 // setting local variables to all redered views:

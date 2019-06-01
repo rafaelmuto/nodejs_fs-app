@@ -1,6 +1,9 @@
 // importing Product model:
 const productModel = require("../models/productModel");
 
+// importing express-validator:
+const { validationResult } = require("express-validator/check");
+
 // here we exports all admin routes functions:
 
 // you can use module.exports or just exports...
@@ -10,7 +13,8 @@ exports.getAddProduct = (req, res, nxt) => {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     // pug doesnt care about having or not the edit: false here:
-    edit: false
+    edit: false,
+    hasError: false
   });
 };
 
@@ -21,6 +25,26 @@ exports.postAddProduct = (req, res, nxt) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
+
+  // router validation response:
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log("-> validation error:", errors.array());
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/edit-product",
+      edit: false,
+      hasError: true,
+      product: {
+        title: title,
+        imageUrl: imageUrl,
+        price: price,
+        description: description
+      },
+      errorMessage: errors.array()[0].msg
+    });
+  }
+
   const product = new productModel({
     title: title,
     price: price,
@@ -60,7 +84,9 @@ exports.getEditProduct = (req, res, nxt) => {
         pageTitle: "Edit Product",
         path: "/edit-product",
         edit: editMode,
-        product: product
+        hasError: false,
+        product: product,
+        errorMessage: null
       });
     })
     .catch(err => console.log(err));
@@ -73,6 +99,26 @@ exports.postEditProduct = (req, res, nxt) => {
   const updatedPrice = req.body.price;
   const updatedImageUrl = req.body.imageUrl;
   const updatedDescription = req.body.description;
+
+  // router validation response:
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log("-> validation error", errors.array());
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Edit Product",
+      path: "/edit-product",
+      edit: true,
+      hasError: true,
+      product: {
+        _id: prodId,
+        title: updatedTitle,
+        imageUrl: updatedImageUrl,
+        price: updatedPrice,
+        description: updatedDescription
+      },
+      errorMessage: errors.array()[0].msg
+    });
+  }
 
   productModel
     .findById(prodId)

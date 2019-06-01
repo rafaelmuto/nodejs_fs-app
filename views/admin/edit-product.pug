@@ -2,6 +2,8 @@ extend ../layouts/main-layout.pug
 block styles
 block content
     main
+        if errorMessage
+            div.user-message.user-message--error #{errorMessage}
         form.product-form(action= edit?'/admin/edit-product':'/admin/add-product', method="POST")
             .form-control
                 input(type="hidden" name="_csrf" value=csrfToken)
