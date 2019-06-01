@@ -6,13 +6,13 @@ block content
             .form-control
                 input(type="hidden" name="_csrf" value=csrfToken)
                 label(for="title") Title
-                input(type="text", name="title", id="title", value= edit?product.title:'')
+                input(type="text", name="title", id="title", value=edit||hasError?product.title:'')
                 label(for="title") ImageURL
-                input(type="text", name="imageUrl", id="imageUrl", value= edit?product.imageUrl:'')
+                input(type="text", name="imageUrl", id="imageUrl", value=edit||hasError?product.imageUrl:'')
                 label(for="title") Price
-                input(type="number", name="price", id="price", step="0.01", value= edit?product.price:'')
+                input(type="number", name="price", id="price", step="0.01", value=edit||hasError?product.price:'')
                 label(for="title") Description
-                textarea(name="description", rows="5", id="description") #{edit?product.description:''}
+                textarea(name="description", rows="5", id="description") #{edit||hasError?product.description:''}
                 if edit
                     input(name="productId", type="hidden", value=product._id)
             button.btn(type="submit") #{edit?'Update Product':'Add Product'}
