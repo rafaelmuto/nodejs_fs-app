@@ -86,7 +86,11 @@ exports.postLogin = (req, res, nxt) => {
         res.redirect("/login");
       }
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
 };
 
 exports.postLogout = (req, res, nxt) => {
@@ -170,9 +174,17 @@ exports.postSignup = (req, res, nxt) => {
             html: "<h1>  You successfully signed up! </h1>"
           });
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          const error = new Error(err);
+          error.httpStatusCode = 500;
+          return nxt(error);
+        });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
 };
 
 exports.getReset = (req, res, nxt) => {
@@ -226,7 +238,11 @@ exports.postReset = (req, res, nxt) => {
           `
         });
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return nxt(error);
+      });
   });
 };
 
@@ -251,7 +267,11 @@ exports.getNewPassword = (req, res, nxt) => {
         passwordToken: token
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
 };
 
 exports.postNewPassword = (req, res, nxt) => {
@@ -280,5 +300,9 @@ exports.postNewPassword = (req, res, nxt) => {
     .then(result => {
       res.redirect("/login");
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
 };

@@ -32,7 +32,7 @@ exports.postAddProduct = (req, res, nxt) => {
     console.log("-> validation error:", errors.array());
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
-      path: "/edit-product",
+      path: "/add-product",
       edit: false,
       hasError: true,
       product: {
@@ -61,7 +61,11 @@ exports.postAddProduct = (req, res, nxt) => {
       console.log("-> new product added");
       res.redirect("/admin/products");
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
 };
 
 exports.getEditProduct = (req, res, nxt) => {
@@ -89,7 +93,11 @@ exports.getEditProduct = (req, res, nxt) => {
         errorMessage: null
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
 };
 
 exports.postEditProduct = (req, res, nxt) => {
@@ -137,7 +145,11 @@ exports.postEditProduct = (req, res, nxt) => {
         res.redirect("/admin/products");
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
 };
 
 exports.getAdminProducts = (req, res, nxt) => {
@@ -153,7 +165,11 @@ exports.getAdminProducts = (req, res, nxt) => {
         products: products
       });
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
 };
 
 exports.postDeleteProduct = (req, res, nxt) => {
@@ -165,5 +181,9 @@ exports.postDeleteProduct = (req, res, nxt) => {
       console.log("-> product deleted:", prodId);
       res.redirect("/admin/products");
     })
-    .catch(err => console.log(err));
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
 };

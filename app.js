@@ -17,6 +17,8 @@ const flash = require("connect-flash");
 const adminRoutes = require("./routes/adminRouter");
 const shopRoutes = require("./routes/shopRouter");
 const authRoutes = require("./routes/authRouter");
+// importin errorController:
+const errorController = require("./controllers/errorController");
 
 // importing userModel:
 const userModel = require("./models/userModel");
@@ -72,7 +74,9 @@ app.use((req, res, nxt) => {
         console.log("-> req.user._id:", req.user._id);
         nxt();
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        throw new Error(err);
+      });
   } else {
     console.log("-> no user...");
     req.user = null;
@@ -92,13 +96,13 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
+app.get("/500", errorController.get500);
+
 // catch all route for 404 errors:
-// instead of creating a whole controller you can just put your route here...
-app.use((req, res, nxt) => {
-  res.status(404).render("404", {
-    pageTitle: "Err404 Page Not Found"
-  });
-  console.log("-> Err404 Page Not Found");
+app.use(errorController.get404);
+
+app.use((err, req, res, nxt) => {
+  res.redirect("/500");
 });
 
 // ==> Connecting to the database and Starting app.server:
