@@ -20,9 +20,8 @@ exports.getAddProduct = (req, res, nxt) => {
 
 exports.postAddProduct = (req, res, nxt) => {
   console.log("==> adminController: postAddProduct");
-  console.log("-> adding product:", req.body);
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const imageUrl = req.body.image;
   const price = req.body.price;
   const description = req.body.description;
 
@@ -58,7 +57,7 @@ exports.postAddProduct = (req, res, nxt) => {
     .save()
     .then(result => {
       // console.log(result);
-      console.log("-> new product added");
+      console.log("-> new product added:", product._id);
       res.redirect("/admin/products");
     })
     .catch(err => {
@@ -83,7 +82,7 @@ exports.getEditProduct = (req, res, nxt) => {
         console.log("-> no such product found");
         res.redirect("/");
       }
-      console.log("-> product updated:", product);
+      console.log("-> editting product: ", product._id);
       res.render("admin/edit-product", {
         pageTitle: "Edit Product",
         path: "/edit-product",
@@ -140,7 +139,7 @@ exports.postEditProduct = (req, res, nxt) => {
       product.description = updatedDescription;
       product.imageUrl = updatedImageUrl;
 
-      console.log("-> diplaying product:", product);
+      console.log("-> edited product: ", product._id);
       return product.save().then(result => {
         res.redirect("/admin/products");
       });

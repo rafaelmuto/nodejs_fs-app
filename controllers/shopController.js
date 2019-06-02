@@ -10,7 +10,7 @@ exports.getIndex = (req, res, nxt) => {
     .find()
     .then(products => {
       // console.log("-> products list:", products);
-      res.render("shop/index", {
+      return res.render("shop/index", {
         pageTitle: "Shop",
         path: "/",
         products: products
@@ -48,7 +48,7 @@ exports.getProduct = (req, res, nxt) => {
   productModel
     .findById(prodId)
     .then(product => {
-      // console.log("-> product:", product);
+      console.log("-> product:", product._id);
       res.render("shop/product-detail", {
         pageTitle: product.title,
         path: "/products",
@@ -89,6 +89,7 @@ exports.postCart = (req, res, nxt) => {
   productModel
     .findById(prodId)
     .then(product => {
+      console.log("-> product added to cart:", product._id);
       req.user.addToCart(product);
       res.redirect("/cart");
     })
@@ -102,10 +103,10 @@ exports.postCart = (req, res, nxt) => {
 exports.postCartDeleteProduct = (req, res, nxt) => {
   console.log("==> shopController: postCartDeleteProduct");
   const prodId = req.body.productId;
-  console.log("-> removing product:", prodId);
   req.user
     .removeFromCart(prodId)
     .then(result => {
+      console.log("-> removing product from cart:", prodId);
       res.redirect("/cart");
     })
     .catch(err => {

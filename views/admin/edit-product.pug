@@ -9,8 +9,10 @@ block content
                 input(type="hidden" name="_csrf" value=csrfToken)
                 label(for="title") Title
                 input(type="text", name="title", id="title", value=edit||hasError?product.title:'')
-                label(for="title") ImageURL
-                input(type="text", name="imageUrl", id="imageUrl", value=edit||hasError?product.imageUrl:'')
+                //- label(for="title") ImageURL
+                //- input(type="text", name="imageUrl", id="imageUrl", value=edit||hasError?product.imageUrl:'')
+                label(for='image') Image
+                input(type='file' name='image' id='image')
                 label(for="title") Price
                 input(type="number", name="price", id="price", step="0.01", value=edit||hasError?product.price:'')
                 label(for="title") Description

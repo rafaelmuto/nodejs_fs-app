@@ -11,6 +11,7 @@ block content
                     form(action="/cart-delete-item", method="POST")
                         button.btn(type="submit") REMOVE
                         input(type="hidden", name="productId", value= item.productId._id)
+                        input(type="hidden" name="_csrf" value=csrfToken)
             form(action="/create-order", method="POST")
                 input(type="hidden" name="_csrf" value=csrfToken)
                 button.btn(type="submit") ORDER NOW!
