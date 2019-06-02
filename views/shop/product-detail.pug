@@ -5,7 +5,7 @@ block content
         h1.detail__title= product.title
         hr
         div
-            img.detailImg(src=product.imageUrl, alt=product.title)
+            img.detailImg(src='/'+product.imageUrl, alt=product.title)
         h2 R$ #{product.price}
         p #{product.description}
         include ../includes/addToCart.pug

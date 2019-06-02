@@ -21,9 +21,25 @@ exports.getAddProduct = (req, res, nxt) => {
 exports.postAddProduct = (req, res, nxt) => {
   console.log("==> adminController: postAddProduct");
   const title = req.body.title;
-  const imageUrl = req.body.image;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
+
+  // checking if the image was uploaded:
+  if (!image) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/add-product",
+      edit: false,
+      hasError: true,
+      product: {
+        title: title,
+        price: price,
+        description: description
+      },
+      errorMessage: "image upload problem"
+    });
+  }
 
   // router validation response:
   const errors = validationResult(req);
@@ -36,13 +52,14 @@ exports.postAddProduct = (req, res, nxt) => {
       hasError: true,
       product: {
         title: title,
-        imageUrl: imageUrl,
         price: price,
         description: description
       },
       errorMessage: errors.array()[0].msg
     });
   }
+
+  const imageUrl = image.path;
 
   const product = new productModel({
     title: title,
@@ -104,7 +121,7 @@ exports.postEditProduct = (req, res, nxt) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedPrice = req.body.price;
-  const updatedImageUrl = req.body.imageUrl;
+  const updatedImage = req.file;
   const updatedDescription = req.body.description;
 
   // router validation response:
@@ -119,7 +136,6 @@ exports.postEditProduct = (req, res, nxt) => {
       product: {
         _id: prodId,
         title: updatedTitle,
-        imageUrl: updatedImageUrl,
         price: updatedPrice,
         description: updatedDescription
       },
@@ -137,7 +153,9 @@ exports.postEditProduct = (req, res, nxt) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDescription;
-      product.imageUrl = updatedImageUrl;
+      if (updatedImage) {
+        product.imageUrl = updatedImage.path;
+      }
 
       console.log("-> edited product: ", product._id);
       return product.save().then(result => {

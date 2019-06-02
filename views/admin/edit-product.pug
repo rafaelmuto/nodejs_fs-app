@@ -4,7 +4,7 @@ block content
     main
         if errorMessage
             div.user-message.user-message--error #{errorMessage}
-        form.product-form(action= edit?'/admin/edit-product':'/admin/add-product', method="POST")
+        form.product-form(action= edit?'/admin/edit-product':'/admin/add-product', method="POST", enctype="multipart/form-data")
             .form-control
                 input(type="hidden" name="_csrf" value=csrfToken)
                 label(for="title") Title

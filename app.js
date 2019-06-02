@@ -12,6 +12,7 @@ const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 
 // importing routes:
 const adminRoutes = require("./routes/adminRouter");
@@ -33,6 +34,27 @@ const store = new MongoDBStore({
 // initialising CSRF protection (csurf):
 const csrfProtection = csrf();
 
+// config multer storage and fileFilter:
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + "_" + file.originalname);
+  }
+});
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 // ==> Middlewares:
 
 // setting up the view engine (pug):
@@ -40,11 +62,15 @@ app.set("view engine", "pug");
 // setting up the views folder, /views is the default thouth:
 app.set("views", "views");
 
-// register the new middleware; bodyParser:
+// register the new middleware; bodyParser and multer:
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 
 // middleware for serving static files:
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // registering express-session middleware:
 app.use(
