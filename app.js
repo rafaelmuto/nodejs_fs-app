@@ -74,9 +74,7 @@ app.use((req, res, nxt) => {
         console.log("-> req.user._id:", req.user._id);
         nxt();
       })
-      .catch(err => {
-        throw new Error(err);
-      });
+      .catch(err => nxt(new Error(err)));
   } else {
     console.log("-> no user...");
     req.user = null;
@@ -96,14 +94,10 @@ app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
-app.get("/500", errorController.get500);
-
 // catch all route for 404 errors:
 app.use(errorController.get404);
-
-app.use((err, req, res, nxt) => {
-  res.redirect("/500");
-});
+// error catch middleawre:
+app.use(errorController.get500);
 
 // ==> Connecting to the database and Starting app.server:
 mongoose
