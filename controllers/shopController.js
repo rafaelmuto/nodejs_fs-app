@@ -1,6 +1,7 @@
-// importing node core modules:
+// importing node packages:
 const fs = require('fs');
 const path = require('path');
+const PDFDocument = require('pdfkit');
 
 // importing models:
 const productModel = require('../models/productModel');
@@ -179,8 +180,6 @@ exports.getOrders = (req, res, nxt) => {
 exports.getInvoice = (req, res, nxt) => {
   console.log('==> shopController: getInvoice');
   const orderId = req.params.orderId;
-  const invoiceName = orderId + '.pdf';
-  const invoicePath = path.join('data', 'invoices', invoiceName);
 
   orderModel
     .findById(orderId)
@@ -193,13 +192,47 @@ exports.getInvoice = (req, res, nxt) => {
         console.log('-> wrong user...');
         return nxt(new Error('Unauthorized'));
       }
-      const file = fs.createReadStream(invoicePath);
+      console.log('-> orderId: ', order._id);
+      const invoiceName = orderId + '.pdf';
+      const invoicePath = path.join('data', 'invoices', invoiceName);
+
+      // creating a new pdf document
+      const pdfDoc = new PDFDocument();
       res.setHeader('Content-Type', 'application/pdf');
       res.setHeader(
         'Content-Disposition',
         'inline; filename="' + invoiceName + '"'
       );
-      file.pipe(res);
+      pdfDoc.pipe(fs.createWriteStream(invoicePath));
+      pdfDoc.pipe(res);
+
+      pdfDoc
+        .font('Courier')
+        .fontSize(24)
+        .text('Invoice #' + order._id);
+      pdfDoc.fontSize(10).text('---------------------------------------------');
+      let totalPrice = 0;
+      order.products.forEach(prod => {
+        totalPrice += prod.qnt * prod.productData.price;
+        pdfDoc.fontSize(18).text(prod.productData.title);
+        pdfDoc
+          .fontSize(14)
+          .text(
+            'Price: $' +
+              prod.productData.price +
+              '(x' +
+              prod.qnt +
+              ') = ' +
+              '$' +
+              prod.productData.price * prod.qnt
+          );
+        pdfDoc.fontSize(9).text(prod.productData.description);
+        pdfDoc
+          .fontSize(10)
+          .text('---------------------------------------------');
+      });
+      pdfDoc.fontSize(16).text('Total: $' + totalPrice);
+      pdfDoc.end();
     })
     .catch(err => nxt(err));
 };
