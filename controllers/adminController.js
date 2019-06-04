@@ -4,9 +4,9 @@ const productModel = require('../models/productModel');
 // importing express-validator:
 const { validationResult } = require('express-validator/check');
 
-// here we exports all admin routes functions:
+// importing util function:
+const fileHelper = require('../util/file');
 
-// you can use module.exports or just exports...
 exports.getAddProduct = (req, res, nxt) => {
   console.log('==> adminController: getAddProduct');
   res.render('admin/edit-product', {
@@ -154,6 +154,7 @@ exports.postEditProduct = (req, res, nxt) => {
       product.price = updatedPrice;
       product.description = updatedDescription;
       if (updatedImage) {
+        fileHelper.deleteFile(product.imageUrl);
         product.imageUrl = updatedImage.path;
       }
 
@@ -192,8 +193,17 @@ exports.getAdminProducts = (req, res, nxt) => {
 exports.postDeleteProduct = (req, res, nxt) => {
   console.log('==> adminController: postDeleteProduct');
   const prodId = req.body.productId;
+
   productModel
-    .deleteOne({ _id: prodId, userId: req.user._id })
+    .findById(prodId)
+    .then(product => {
+      if (!product) {
+        return nxt(new Error('Product not found!'));
+      } else {
+        fileHelper.deleteFile(product.imageUrl);
+        return productModel.deleteOne({ _id: prodId, userId: req.user._id });
+      }
+    })
     .then(() => {
       console.log('-> product deleted:', prodId);
       res.redirect('/admin/products');
