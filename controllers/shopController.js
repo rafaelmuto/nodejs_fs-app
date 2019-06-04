@@ -1,18 +1,22 @@
+// importing node core modules:
+const fs = require('fs');
+const path = require('path');
+
 // importing models:
-const productModel = require("../models/productModel");
-const orderModel = require("../models/orderModel");
+const productModel = require('../models/productModel');
+const orderModel = require('../models/orderModel');
 
 // here we exports all shop routes functions:
 
 exports.getIndex = (req, res, nxt) => {
-  console.log("==> shopController: getIndex");
+  console.log('==> shopController: getIndex');
   productModel
     .find()
     .then(products => {
       // console.log("-> products list:", products);
-      return res.render("shop/index", {
-        pageTitle: "Shop",
-        path: "/",
+      return res.render('shop/index', {
+        pageTitle: 'Shop',
+        path: '/',
         products: products
       });
     })
@@ -24,14 +28,14 @@ exports.getIndex = (req, res, nxt) => {
 };
 
 exports.getProducts = (req, res, nxt) => {
-  console.log("==> shopController: getProducts");
+  console.log('==> shopController: getProducts');
   productModel
     .find()
     .then(products => {
       // console.log("-> products list:", products);
-      res.render("shop/product-list", {
-        pageTitle: "Shop",
-        path: "/products",
+      res.render('shop/product-list', {
+        pageTitle: 'Shop',
+        path: '/products',
         products: products
       });
     })
@@ -43,15 +47,15 @@ exports.getProducts = (req, res, nxt) => {
 };
 
 exports.getProduct = (req, res, nxt) => {
-  console.log("==> shopController: getProduct");
+  console.log('==> shopController: getProduct');
   const prodId = req.params.productId;
   productModel
     .findById(prodId)
     .then(product => {
-      console.log("-> product:", product._id);
-      res.render("shop/product-detail", {
+      console.log('-> product:', product._id);
+      res.render('shop/product-detail', {
         pageTitle: product.title,
-        path: "/products",
+        path: '/products',
         product: product
       });
     })
@@ -63,16 +67,16 @@ exports.getProduct = (req, res, nxt) => {
 };
 
 exports.getCart = (req, res, nxt) => {
-  console.log("==> shopController: getCart");
+  console.log('==> shopController: getCart');
   req.user
-    .populate("cart.items.productId")
+    .populate('cart.items.productId')
     .execPopulate()
     .then(user => {
       const products = user.cart.items;
       // console.log("-> cart product list");
-      res.render("shop/cart", {
-        pageTitle: "Your Cart",
-        path: "/cart",
+      res.render('shop/cart', {
+        pageTitle: 'Your Cart',
+        path: '/cart',
         products: products
       });
     })
@@ -84,14 +88,14 @@ exports.getCart = (req, res, nxt) => {
 };
 
 exports.postCart = (req, res, nxt) => {
-  console.log("==> shopController: postCart");
+  console.log('==> shopController: postCart');
   const prodId = req.body.productId;
   productModel
     .findById(prodId)
     .then(product => {
-      console.log("-> product added to cart:", product._id);
+      console.log('-> product added to cart:', product._id);
       req.user.addToCart(product);
-      res.redirect("/cart");
+      res.redirect('/cart');
     })
     .catch(err => {
       const error = new Error(err);
@@ -101,13 +105,13 @@ exports.postCart = (req, res, nxt) => {
 };
 
 exports.postCartDeleteProduct = (req, res, nxt) => {
-  console.log("==> shopController: postCartDeleteProduct");
+  console.log('==> shopController: postCartDeleteProduct');
   const prodId = req.body.productId;
   req.user
     .removeFromCart(prodId)
     .then(result => {
-      console.log("-> removing product from cart:", prodId);
-      res.redirect("/cart");
+      console.log('-> removing product from cart:', prodId);
+      res.redirect('/cart');
     })
     .catch(err => {
       const error = new Error(err);
@@ -117,8 +121,9 @@ exports.postCartDeleteProduct = (req, res, nxt) => {
 };
 
 exports.postOrder = (req, res, nxt) => {
+  console.log('==> shopController: postOrder');
   req.user
-    .populate("cart.items.productId")
+    .populate('cart.items.productId')
     .execPopulate()
     .then(user => {
       const products = user.cart.items.map(i => {
@@ -137,7 +142,7 @@ exports.postOrder = (req, res, nxt) => {
       req.user.clearCart();
     })
     .then(() => {
-      res.redirect("/orders");
+      res.redirect('/orders');
     })
     .catch(err => {
       const error = new Error(err);
@@ -147,12 +152,13 @@ exports.postOrder = (req, res, nxt) => {
 };
 
 exports.getOrders = (req, res, nxt) => {
+  console.log('==> shopController: getOrders');
   orderModel
-    .find({ "user.userId": req.user._id })
+    .find({ 'user.userId': req.user._id })
     .then(orders => {
-      res.render("shop/orders", {
-        pageTitle: "Your Orders",
-        path: "/orders",
+      res.render('shop/orders', {
+        pageTitle: 'Your Orders',
+        path: '/orders',
         orders: orders
       });
     })
@@ -163,9 +169,45 @@ exports.getOrders = (req, res, nxt) => {
     });
 };
 
-exports.getCheckout = (req, res, nxt) => {
-  res.render("shop/checkout", {
-    pageTitle: "Checkout",
-    path: "/checkout"
-  });
+// exports.getCheckout = (req, res, nxt) => {
+//   res.render('shop/checkout', {
+//     pageTitle: 'Checkout',
+//     path: '/checkout'
+//   });
+// };
+
+exports.getInvoice = (req, res, nxt) => {
+  console.log('==> shopController: getInvoice');
+  const orderId = req.params.orderId;
+  const invoiceName = orderId + '.pdf';
+  const invoicePath = path.join('data', 'invoices', invoiceName);
+
+  orderModel
+    .findById(orderId)
+    .then(order => {
+      if (!order) {
+        console.log('-> order not found.');
+        return nxt(new Error('No order found.'));
+      }
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+        console.log('-> wrong user...');
+        return nxt(new Error('Unauthorized'));
+      }
+      fs.readFile(invoicePath, (err, data) => {
+        if (err) {
+          console.log('-> err while reading file');
+          return nxt(err);
+        } else {
+          res.setHeader('Content-Type', 'application/pdf');
+          res.setHeader(
+            'Content-Disposition',
+            'inline; filename="' + invoiceName + '"'
+          );
+          // res.send(data);
+          // or maybe
+          res.download(invoicePath);
+        }
+      });
+    })
+    .catch(err => nxt(err));
 };

@@ -6,7 +6,7 @@ exports.get404 = (req, res, nxt) => {
 };
 
 exports.get500 = (err, req, res, nxt) => {
-  console.log('==> errorController: get 500');
+  console.log('==> errorController: get500');
   res.status(500).render('500', {
     pageTitle: '500 internal error'
   });

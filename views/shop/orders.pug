@@ -6,6 +6,7 @@ block content
             each order in orders
                 div.card.order__details
                     h1.cart__title Order ##{order._id} 
+                    a(href="/orders/"+order._id) download invoice
                     ul
                         each product in order.products
                             li (#{product.qnt}) #{product.productData.title} - $#{product.productData.price}
