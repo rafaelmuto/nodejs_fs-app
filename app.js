@@ -1,35 +1,35 @@
-console.log("==> starting app.js");
+console.log('==> starting app.js');
 
 // importing credencials & settings:
-const SETUP = require("./setup");
+const SETUP = require('./setup');
 
 // importing express.js and other modules:
-const express = require("express");
-const bodyParser = require("body-parser");
-const path = require("path");
-const mongoose = require("mongoose");
-const session = require("express-session");
-const MongoDBStore = require("connect-mongodb-session")(session);
-const csrf = require("csurf");
-const flash = require("connect-flash");
-const multer = require("multer");
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const csrf = require('csurf');
+const flash = require('connect-flash');
+const multer = require('multer');
 
 // importing routes:
-const adminRoutes = require("./routes/adminRouter");
-const shopRoutes = require("./routes/shopRouter");
-const authRoutes = require("./routes/authRouter");
+const adminRoutes = require('./routes/adminRouter');
+const shopRoutes = require('./routes/shopRouter');
+const authRoutes = require('./routes/authRouter');
 // importin errorController:
-const errorController = require("./controllers/errorController");
+const errorController = require('./controllers/errorController');
 
 // importing userModel:
-const userModel = require("./models/userModel");
+const userModel = require('./models/userModel');
 
 // creating the server(?) obj with the express():
 const app = express();
 // creating  new connect-mongodb-session:
 const store = new MongoDBStore({
   uri: SETUP.MONGODB_URI,
-  collection: "sessions"
+  collection: 'sessions'
 });
 // initialising CSRF protection (csurf):
 const csrfProtection = csrf();
@@ -37,17 +37,17 @@ const csrfProtection = csrf();
 // config multer storage and fileFilter:
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "images");
+    cb(null, 'images');
   },
   filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + "_" + file.originalname);
+    cb(null, new Date().toISOString() + '_' + file.originalname);
   }
 });
 const fileFilter = (req, file, cb) => {
   if (
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg"
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
   ) {
     cb(null, true);
   } else {
@@ -58,19 +58,19 @@ const fileFilter = (req, file, cb) => {
 // ==> Middlewares:
 
 // setting up the view engine (pug):
-app.set("view engine", "pug");
+app.set('view engine', 'pug');
 // setting up the views folder, /views is the default thouth:
-app.set("views", "views");
+app.set('views', 'views');
 
 // register the new middleware; bodyParser and multer:
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single('image')
 );
 
 // middleware for serving static files:
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/images", express.static(path.join(__dirname, "images")));
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // registering express-session middleware:
 app.use(
@@ -90,19 +90,19 @@ app.use(flash());
 
 // this middleware registers the userModel obj to the req:
 app.use((req, res, nxt) => {
-  console.log(">>= ==> app: Registering User");
+  console.log('>>= ==> app: Registering User');
   if (req.session.user) {
-    console.log("-> req.session.user:", req.session.user._id);
+    console.log('-> req.session.user:', req.session.user._id);
     userModel
       .findById(req.session.user)
       .then(user => {
         req.user = user;
-        console.log("-> req.user._id:", req.user._id);
+        console.log('-> req.user._id:', req.user._id);
         nxt();
       })
       .catch(err => nxt(new Error(err)));
   } else {
-    console.log("-> no user...");
+    console.log('-> no user...');
     req.user = null;
     nxt();
   }
@@ -110,16 +110,16 @@ app.use((req, res, nxt) => {
 
 // setting local variables to all redered views:
 app.use((req, res, nxt) => {
-  console.log("-> res.locals.isAuth: ", req.session.isLoggedIn);
+  console.log('-> res.locals.isAuth: ', req.session.isLoggedIn);
   res.locals.isAuth = req.session.isLoggedIn;
   let token = req.csrfToken();
-  console.log("-> res.locals.csrfToken: ", token);
+  console.log('-> res.locals.csrfToken: ', token);
   res.locals.csrfToken = token;
   nxt();
 });
 
 // registering routes as middlewares:
-app.use("/admin", adminRoutes);
+app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
@@ -138,8 +138,8 @@ mongoose
     { useNewUrlParser: true }
   )
   .then(result => {
-    console.log("=> mongoose connected!");
-    console.log("-> starting server listen @ port:", SETUP.SERVER_PORT);
+    console.log('=> mongoose connected!');
+    console.log('-> starting server listen @ port:', SETUP.SERVER_PORT);
     app.listen(SETUP.SERVER_PORT);
   })
   .catch(err => console.log(err));

@@ -1,18 +1,18 @@
 // importing bcrypt pack:
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 // importing nodemailer and nodemailer-sendgrid-transport:
-const nodemailer = require("nodemailer");
-const sendgridTransport = require("nodemailer-sendgrid-transport");
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
 // importing express-validator:
-const { validationResult } = require("express-validator/check");
+const { validationResult } = require('express-validator/check');
 
 // importing node.js crypto pack:
-const crypto = require("crypto");
+const crypto = require('crypto');
 
 // importing credencials and settings:
-const SETUP = require("../setup");
+const SETUP = require('../setup');
 
-const userModel = require("../models/userModel");
+const userModel = require('../models/userModel');
 
 // initialising nodemailer
 const transporter = nodemailer.createTransport(
@@ -24,32 +24,32 @@ const transporter = nodemailer.createTransport(
 );
 
 exports.getLogin = (req, res, nxt) => {
-  console.log("==> authController: getLogin");
-  let message = req.flash("error");
+  console.log('==> authController: getLogin');
+  let message = req.flash('error');
   if (message.length > 0) {
     message = message[0];
   } else {
     message = null;
   }
-  res.render("auth/login", {
-    path: "/login",
-    pageTitle: "Login",
+  res.render('auth/login', {
+    path: '/login',
+    pageTitle: 'Login',
     errorMessage: message
   });
 };
 
 exports.postLogin = (req, res, nxt) => {
-  console.log("==> authController: postLogin");
+  console.log('==> authController: postLogin');
   const email = req.body.email;
   const password = req.body.password;
 
   // router validation response:
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log("-> validation error!", errors.array());
-    return res.status(422).render("auth/login", {
-      path: "/login",
-      pageTitle: "Login",
+    console.log('-> validation error!', errors.array());
+    return res.status(422).render('auth/login', {
+      path: '/login',
+      pageTitle: 'Login',
       errorMessage: errors.array()[0].msg,
       oldInput: { email: email }
     });
@@ -66,24 +66,24 @@ exports.postLogin = (req, res, nxt) => {
               req.session.isLoggedIn = true;
               req.session.user = user;
               req.session.save(err => {
-                console.log("-> registering req.session.user:", user);
-                res.redirect("/");
+                console.log('-> registering req.session.user:', user);
+                res.redirect('/');
               });
             } else {
-              req.flash("error", "Password invalid...");
-              res.redirect("/login");
+              req.flash('error', 'Password invalid...');
+              res.redirect('/login');
             }
           })
           .catch(err => {
             console.log(err);
-            res.redirect("/login");
+            res.redirect('/login');
           });
       } else {
         req.session.isLoggedIn = false;
         req.session.user = null;
-        console.log(" registering req.session.user: fail");
-        req.flash("error", "Invalid email...");
-        res.redirect("/login");
+        console.log(' registering req.session.user: fail');
+        req.flash('error', 'Invalid email...');
+        res.redirect('/login');
       }
     })
     .catch(err => {
@@ -94,31 +94,31 @@ exports.postLogin = (req, res, nxt) => {
 };
 
 exports.postLogout = (req, res, nxt) => {
-  console.log("==> authController: postLogout");
+  console.log('==> authController: postLogout');
   req.session.destroy(err => {
-    console.log("->", err);
-    res.redirect("/");
+    console.log('->', err);
+    res.redirect('/');
   });
 };
 
 exports.getSignup = (req, res, nxt) => {
-  console.log("==> authController: getSignup");
-  let message = req.flash("error");
+  console.log('==> authController: getSignup');
+  let message = req.flash('error');
   if (message.length > 0) {
     message = message[0];
   } else {
     message = null;
   }
-  res.render("auth/signup", {
-    path: "/signup",
-    pageTitle: "Sign-Up",
+  res.render('auth/signup', {
+    path: '/signup',
+    pageTitle: 'Sign-Up',
     isAuth: req.session.isLoggedIn,
     errorMessage: message
   });
 };
 
 exports.postSignup = (req, res, nxt) => {
-  console.log("==> authController: postSignup");
+  console.log('==> authController: postSignup');
   const email = req.body.email;
   const password = req.body.password;
   const confirmPassword = req.body.confirmPassword;
@@ -126,10 +126,10 @@ exports.postSignup = (req, res, nxt) => {
   // router validation response
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log("-> validation error!", errors.array());
-    return res.status(422).render("auth/signup", {
-      path: "/signup",
-      pageTitle: "Signup",
+    console.log('-> validation error!', errors.array());
+    return res.status(422).render('auth/signup', {
+      path: '/signup',
+      pageTitle: 'Signup',
       errorMessage: errors.array()[0].msg,
       oldInput: {
         email: email,
@@ -144,14 +144,14 @@ exports.postSignup = (req, res, nxt) => {
     .then(user => {
       // controller validation:
       if (user) {
-        console.log("-> email already exists");
-        req.flash("error", "this e-mail already exists!");
-        return res.redirect("/signup");
+        console.log('-> email already exists');
+        req.flash('error', 'this e-mail already exists!');
+        return res.redirect('/signup');
       }
       if (password !== confirmPassword) {
         console.log("-> passwords don't match");
-        req.flash("error", "passwords don`t match!");
-        return res.redirect("/signup");
+        req.flash('error', 'passwords don`t match!');
+        return res.redirect('/signup');
       }
 
       return bcrypt
@@ -165,13 +165,13 @@ exports.postSignup = (req, res, nxt) => {
           return newUser.save();
         })
         .then(result => {
-          console.log("-> signup successfull, sending email...");
-          res.redirect("/login");
+          console.log('-> signup successfull, sending email...');
+          res.redirect('/login');
           return transporter.sendMail({
             to: email,
-            from: "nodejs_app@nodejs.app",
-            subject: "Sign up succeeded!",
-            html: "<h1>  You successfully signed up! </h1>"
+            from: 'nodejs_app@nodejs.app',
+            subject: 'Sign up succeeded!',
+            html: '<h1>  You successfully signed up! </h1>'
           });
         })
         .catch(err => {
@@ -188,50 +188,50 @@ exports.postSignup = (req, res, nxt) => {
 };
 
 exports.getReset = (req, res, nxt) => {
-  console.log("==> authController: getReset");
-  let message = req.flash("error");
+  console.log('==> authController: getReset');
+  let message = req.flash('error');
   if (message.length > 0) {
     message = message[0];
   } else {
     message = null;
   }
-  res.render("auth/reset", {
-    path: "/reset",
-    pageTitle: "Password Reset",
+  res.render('auth/reset', {
+    path: '/reset',
+    pageTitle: 'Password Reset',
     isAuth: req.session.isLoggedIn,
     errorMessage: message
   });
 };
 
 exports.postReset = (req, res, nxt) => {
-  console.log("==> authController: postReset");
+  console.log('==> authController: postReset');
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
-      console.log("-> crypto error...");
-      req.flash("error", "error while generating your random link.");
-      return res.redirect("/reset");
+      console.log('-> crypto error...');
+      req.flash('error', 'error while generating your random link.');
+      return res.redirect('/reset');
     }
-    const token = buffer.toString("hex");
+    const token = buffer.toString('hex');
     userModel
       .findOne({ email: req.body.email })
       .then(user => {
         if (!user) {
-          console.log("-> user not found");
-          req.flash("error", "No account found!");
-          return res.redirect("/reset");
+          console.log('-> user not found');
+          req.flash('error', 'No account found!');
+          return res.redirect('/reset');
         }
-        console.log("-> user found:", user.email);
+        console.log('-> user found:', user.email);
         user.resetToken = token;
         user.resetTokenExpiration = Date.now() + 3600000;
         return user.save();
       })
       .then(result => {
-        console.log("-> sending reset link to:", req.body.email);
-        res.redirect("/");
+        console.log('-> sending reset link to:', req.body.email);
+        res.redirect('/');
         transporter.sendMail({
           to: req.body.email,
-          from: "nodejs_app@nodejs.app",
-          subject: "Password Reset",
+          from: 'nodejs_app@nodejs.app',
+          subject: 'Password Reset',
           html: `
             <p>You Requested a Password Reset</p>
             <p><a href="http://localhost:3000/reset/${token}"> Click here to set a new password</a></p>
@@ -247,20 +247,20 @@ exports.postReset = (req, res, nxt) => {
 };
 
 exports.getNewPassword = (req, res, nxt) => {
-  console.log("==> authController: getNewPassword");
+  console.log('==> authController: getNewPassword');
   const token = req.params.token;
   userModel
     .findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
     .then(user => {
-      let message = req.flash("error");
+      let message = req.flash('error');
       if (message.length > 0) {
         message = message[0];
       } else {
         message = null;
       }
-      res.render("auth/new-password", {
-        path: "/new-password",
-        pageTitle: "New Password",
+      res.render('auth/new-password', {
+        path: '/new-password',
+        pageTitle: 'New Password',
         isAuth: req.session.isLoggedIn,
         errorMessage: message,
         userId: user._id.toString(),
@@ -275,7 +275,7 @@ exports.getNewPassword = (req, res, nxt) => {
 };
 
 exports.postNewPassword = (req, res, nxt) => {
-  console.log("==> authController: postNewPassword");
+  console.log('==> authController: postNewPassword');
   const newPassword = req.body.password;
   const userId = req.body.userId;
   const passwordToken = req.body.passwordToken;
@@ -298,7 +298,7 @@ exports.postNewPassword = (req, res, nxt) => {
       return resetUser.save();
     })
     .then(result => {
-      res.redirect("/login");
+      res.redirect('/login');
     })
     .catch(err => {
       const error = new Error(err);

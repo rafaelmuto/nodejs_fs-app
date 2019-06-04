@@ -1,5 +1,5 @@
 // importing mongoose pack:
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 // creating mongoose schema:
 const productSchema = new mongoose.Schema({
@@ -15,9 +15,9 @@ const productSchema = new mongoose.Schema({
   imageUrl: String,
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User',
     required: true
   }
 });
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model('Product', productSchema);

@@ -1,5 +1,5 @@
 // importing mongoose pack:
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 // creating a user schema:
 const userSchema = new mongoose.Schema({
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
       {
         productId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
+          ref: 'Product',
           required: true
         },
         qnt: { type: Number, require: true }
@@ -66,4 +66,4 @@ userSchema.methods.clearCart = function() {
   return this.save();
 };
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);
