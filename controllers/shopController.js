@@ -193,21 +193,13 @@ exports.getInvoice = (req, res, nxt) => {
         console.log('-> wrong user...');
         return nxt(new Error('Unauthorized'));
       }
-      fs.readFile(invoicePath, (err, data) => {
-        if (err) {
-          console.log('-> err while reading file');
-          return nxt(err);
-        } else {
-          res.setHeader('Content-Type', 'application/pdf');
-          res.setHeader(
-            'Content-Disposition',
-            'inline; filename="' + invoiceName + '"'
-          );
-          // res.send(data);
-          // or maybe
-          res.download(invoicePath);
-        }
-      });
+      const file = fs.createReadStream(invoicePath);
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader(
+        'Content-Disposition',
+        'inline; filename="' + invoiceName + '"'
+      );
+      file.pipe(res);
     })
     .catch(err => nxt(err));
 };
