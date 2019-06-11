@@ -7,18 +7,38 @@ const PDFDocument = require('pdfkit');
 const productModel = require('../models/productModel');
 const orderModel = require('../models/orderModel');
 
+const ITENS_PER_PAGE = 1;
+
 // here we exports all shop routes functions:
 
 exports.getIndex = (req, res, nxt) => {
   console.log('==> shopController: getIndex');
+
+  const page = +req.query.page;
+  let totalItems;
+
   productModel
     .find()
+    .countDocuments()
+    .then(numProducts => {
+      totalItems = numProducts;
+      return productModel
+        .find()
+        .skip((page - 1) * ITENS_PER_PAGE)
+        .limit(ITENS_PER_PAGE);
+    })
     .then(products => {
       // console.log("-> products list:", products);
       return res.render('shop/index', {
         pageTitle: 'Shop',
         path: '/',
-        products: products
+        products: products,
+        currentPage: page,
+        hasNextPage: ITENS_PER_PAGE * page < totalItems,
+        hasPrevousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITENS_PER_PAGE)
       });
     })
     .catch(err => {
