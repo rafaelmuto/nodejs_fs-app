@@ -243,10 +243,7 @@ exports.getInvoice = (req, res, nxt) => {
       // creating a new pdf document
       const pdfDoc = new PDFDocument();
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader(
-        'Content-Disposition',
-        'inline; filename="' + invoiceName + '"'
-      );
+      res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"');
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
 
@@ -259,21 +256,9 @@ exports.getInvoice = (req, res, nxt) => {
       order.products.forEach(prod => {
         totalPrice += prod.qnt * prod.productData.price;
         pdfDoc.fontSize(18).text(prod.productData.title);
-        pdfDoc
-          .fontSize(14)
-          .text(
-            'Price: $' +
-              prod.productData.price +
-              '(x' +
-              prod.qnt +
-              ') = ' +
-              '$' +
-              prod.productData.price * prod.qnt
-          );
+        pdfDoc.fontSize(14).text('Price: $' + prod.productData.price + '(x' + prod.qnt + ') = ' + '$' + prod.productData.price * prod.qnt);
         pdfDoc.fontSize(9).text(prod.productData.description);
-        pdfDoc
-          .fontSize(10)
-          .text('---------------------------------------------');
+        pdfDoc.fontSize(10).text('---------------------------------------------');
       });
       pdfDoc.fontSize(16).text('Total: $' + totalPrice);
       pdfDoc.end();
