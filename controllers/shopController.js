@@ -7,14 +7,17 @@ const PDFDocument = require('pdfkit');
 const productModel = require('../models/productModel');
 const orderModel = require('../models/orderModel');
 
-const ITENS_PER_PAGE = 1;
+const ITENS_PER_PAGE = 3;
 
 // here we exports all shop routes functions:
 
 exports.getIndex = (req, res, nxt) => {
   console.log('==> shopController: getIndex');
+  const page = 1;
+  if (+req.query.page) {
+    page = +req.query.page;
+  }
 
-  const page = +req.query.page;
   let totalItems;
 
   productModel
