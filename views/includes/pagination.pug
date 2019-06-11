@@ -1,10 +1,7 @@
 section.pagination
-    if currentPage != 1 && previousPage != 1
-        a(href=path+"?page=1") 1
-    if hasPrevousPage
-        a(href=path+"?page="+previousPage) #{previousPage}
-    a.active(href=path+"?page="+currentPage) #{currentPage}
-    if hasNextPage
-        a(href=path+"?page="+nextPage) #{nextPage}
-    if lastPage != currentPage && nextPage != lastPage
-        a(href=path+"?page="+lastPage) #{lastPage}
+    - for ( let i = 1; i <= totalPages; i++)
+        if currentPage == i
+            a.active(href=path+"?page="+i) #{i}
+        else
+            a(href=path+"?page="+i) #{i}
+

@@ -37,11 +37,8 @@ exports.getIndex = (req, res, nxt) => {
         path: '/',
         products: products,
         currentPage: page,
-        hasNextPage: ITENS_PER_PAGE * page < totalItems,
-        hasPrevousPage: page > 1,
-        nextPage: page + 1,
-        previousPage: page - 1,
-        lastPage: Math.ceil(totalItems / ITENS_PER_PAGE)
+        currentPage: page,
+        totalPages: Math.ceil(totalItems / ITENS_PER_PAGE)
       });
     })
     .catch(err => {
@@ -77,11 +74,7 @@ exports.getProducts = (req, res, nxt) => {
         path: '/products',
         products: products,
         currentPage: page,
-        hasNextPage: ITENS_PER_PAGE * page < totalItems,
-        hasPrevousPage: page > 1,
-        nextPage: page + 1,
-        previousPage: page - 1,
-        lastPage: Math.ceil(totalItems / ITENS_PER_PAGE)
+        totalPages: Math.ceil(totalItems / ITENS_PER_PAGE)
       });
     })
     .catch(err => {
