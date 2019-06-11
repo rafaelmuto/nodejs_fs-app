@@ -17,5 +17,6 @@ block content
                         div.card__actions
                             a.btn(href="/products/" + product._id) Details
                             include ../includes/addToCart.pug
+            include ../includes/pagination.pug
         else
             h1 no products...

@@ -13,7 +13,7 @@ const ITENS_PER_PAGE = 3;
 
 exports.getIndex = (req, res, nxt) => {
   console.log('==> shopController: getIndex');
-  const page = 1;
+  let page = 1;
   if (+req.query.page) {
     page = +req.query.page;
   }
@@ -53,14 +53,35 @@ exports.getIndex = (req, res, nxt) => {
 
 exports.getProducts = (req, res, nxt) => {
   console.log('==> shopController: getProducts');
+  let page = 1;
+  if (+req.query.page) {
+    page = +req.query.page;
+  }
+
+  let totalItems;
+
   productModel
     .find()
+    .countDocuments()
+    .then(numProducts => {
+      totalItems = numProducts;
+      return productModel
+        .find()
+        .skip((page - 1) * ITENS_PER_PAGE)
+        .limit(ITENS_PER_PAGE);
+    })
     .then(products => {
       // console.log("-> products list:", products);
-      res.render('shop/product-list', {
-        pageTitle: 'Shop',
+      return res.render('shop/product-list', {
+        pageTitle: 'Products',
         path: '/products',
-        products: products
+        products: products,
+        currentPage: page,
+        hasNextPage: ITENS_PER_PAGE * page < totalItems,
+        hasPrevousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITENS_PER_PAGE)
       });
     })
     .catch(err => {
