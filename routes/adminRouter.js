@@ -24,10 +24,15 @@ router.post(
   isAuth,
   body('title')
     .isString()
-    .isLength({ min: 3 })
+    .isLength({
+      min: 3
+    })
     .trim(),
   body('price').isFloat(),
-  body('description').isLength({ min: 5, max: 255 }),
+  body('description').isLength({
+    min: 5,
+    max: 255
+  }),
   adminController.postAddProduct
 );
 
@@ -40,15 +45,20 @@ router.post(
   isAuth,
   body('title')
     .isString()
-    .isLength({ min: 3 })
+    .isLength({
+      min: 3
+    })
     .trim(),
   body('price').isFloat(),
-  body('description').isLength({ min: 5, max: 255 }),
+  body('description').isLength({
+    min: 5,
+    max: 255
+  }),
   adminController.postEditProduct
 );
 
 // POST route to delete a product:
-router.post('/delete-product', isAuth, adminController.postDeleteProduct);
+router.delete('/deproduct/:productId', isAuth, adminController.deleteProduct);
 
 // exporting the router obj:
 module.exports = router;

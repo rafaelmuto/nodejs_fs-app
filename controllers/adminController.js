@@ -190,9 +190,9 @@ exports.getAdminProducts = (req, res, nxt) => {
     });
 };
 
-exports.postDeleteProduct = (req, res, nxt) => {
-  console.log('==> adminController: postDeleteProduct');
-  const prodId = req.body.productId;
+exports.deleteProduct = (req, res, nxt) => {
+  console.log('==> adminController: deleteProduct');
+  const prodId = req.params.productId;
 
   productModel
     .findById(prodId)
@@ -206,11 +206,9 @@ exports.postDeleteProduct = (req, res, nxt) => {
     })
     .then(() => {
       console.log('-> product deleted:', prodId);
-      res.redirect('/admin/products');
+      res.status(200).json({ message: 'Ok!' });
     })
     .catch(err => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      return nxt(error);
+      res.status(500).json({ message: 'error...' });
     });
 };
