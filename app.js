@@ -3,15 +3,26 @@ console.log('==> starting app.js');
 // importing credencials & settings:
 const SETUP = require('./setup');
 
-// importing express.js and other modules:
+// ==> importing express.js and other modules:
 const express = require('express');
-const bodyParser = require('body-parser');
 const path = require('path');
+// -> body-parser: parsing body data into req.body
+const bodyParser = require('body-parser');
+// -> mongoose: Mongoose is a MongoDB object modeling tool designed to work in an
+//    asynchronous environment.
 const mongoose = require('mongoose');
+// -> express-session: storing session data in the server-side.
 const session = require('express-session');
+// -> connect-mongodb-session: This module exports a single function which takes an
+//    instance of connect (or Express) and returns a MongoDBStore class that can be
+//    used to store sessions in MongoDB.
 const MongoDBStore = require('connect-mongodb-session')(session);
+// -> CSURF: cross-site request forgery protection
 const csrf = require('csurf');
+// -> connect-flash: used in combination with redirects, ensuring that the message
+//    is available to the next page that is to be rendered.
 const flash = require('connect-flash');
+// -> Multer: handling multipart/form-data, which is primarily used for uploading files.
 const multer = require('multer');
 
 // importing routes:
@@ -58,15 +69,13 @@ app.set('view engine', 'pug');
 // setting up the views folder, /views is the default thouth:
 app.set('views', 'views');
 
-// register the new middleware; bodyParser and multer:
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 
-// middleware for serving static files:
+// serving static files:
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-// registering express-session middleware:
 app.use(
   session({
     secret: SETUP.EXPSESS_SECRET,
@@ -76,10 +85,7 @@ app.use(
   })
 );
 
-// registering csurf middleware:
 app.use(csrfProtection);
-
-// registering connect-flash:
 app.use(flash());
 
 // this middleware registers the userModel obj to the req:
@@ -112,14 +118,14 @@ app.use((req, res, nxt) => {
   nxt();
 });
 
-// registering routes as middlewares:
+// registering routes middlewares:
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
 
 // catch all route for 404 errors:
 app.use(errorController.get404);
-// error catch middleawre:
+// error catch:
 app.use(errorController.get500);
 
 // ==> Connecting to the database and Starting app.server:
