@@ -29,8 +29,11 @@ const multer = require('multer');
 const adminRoutes = require('./routes/adminRouter');
 const shopRoutes = require('./routes/shopRouter');
 const authRoutes = require('./routes/authRouter');
-// importin errorController:
+// importin constrollers:
 const errorController = require('./controllers/errorController');
+const shopController = require('./controllers/shopController');
+// importing isAuth middleware:
+const isAuth = require('./middlewares/isAuth');
 
 // importing userModel:
 const userModel = require('./models/userModel');
@@ -85,19 +88,18 @@ app.use(
   })
 );
 
-app.use(csrfProtection);
 app.use(flash());
 
 // this middleware registers the userModel obj to the req:
 app.use((req, res, nxt) => {
-  console.log('>>= ==> app: Registering User');
+  console.log('::: app ::: Registering User');
   if (req.session.user) {
-    console.log('-> req.session.user:', req.session.user._id);
+    console.log('-> req.session.user._id:', req.session.user._id);
     userModel
       .findById(req.session.user)
       .then(user => {
         req.user = user;
-        console.log('-> req.user._id:', req.user._id);
+        console.log('-> req.user', req.user);
         nxt();
       })
       .catch(err => nxt(new Error(err)));
@@ -108,6 +110,11 @@ app.use((req, res, nxt) => {
   }
 });
 
+// POST route for creating an order from the current user cart:
+app.post('/create-order', isAuth, shopController.postOrder);
+
+// == IMPORTANT: adding csrf here only protects routes bellow ==
+app.use(csrfProtection);
 // setting local variables to all redered views:
 app.use((req, res, nxt) => {
   console.log('-> res.locals.isAuth: ', req.session.isLoggedIn);
@@ -118,7 +125,7 @@ app.use((req, res, nxt) => {
   nxt();
 });
 
-// registering routes middlewares:
+// registering route middlewares:
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);

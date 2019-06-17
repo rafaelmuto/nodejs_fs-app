@@ -1,1 +1,25 @@
 extend ../layouts/main-layout.pug
+
+block content
+    div.centered.cart__grid
+        if products.length > 0
+            each item in products
+                div.card.cart__details
+                    h1.cart__title #{item.productId.title} 
+                    p productId: #{item.productId._id}
+                    p Qnt: (#{item.qnt})
+            h2 Total: $#{totalSum}
+            //- form(action="/create-order", method="POST")
+            //-     input(type="hidden" name="_csrf" value=csrfToken)
+            //-     button.btn(type="submit") ORDER NOW!
+            form(action="/create-order", method="POST")
+                script(src="https://checkout.stripe.com/checkout.js" class="stripe-button" 
+                data-key="pk_test_gC6HgeTmmgyCfKcXs7wfYTJz00BFBXkIhF" 
+                data-amount= totalSum*100
+                data-name="Your Order"
+                data-description="all the items you ordered"
+                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                data-locale="auto"
+                data-currency="USD")
+        else
+            h1 cart is empty...

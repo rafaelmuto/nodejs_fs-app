@@ -4,7 +4,7 @@ const express = require('express');
 const router = express.Router();
 
 // importing controllers:
-const shopController = require('../controllers/shopController.js');
+const shopController = require('../controllers/shopController');
 
 // importing isAuth middleware:
 const isAuth = require('../middlewares/isAuth');
@@ -27,16 +27,14 @@ router.post('/cart', isAuth, shopController.postCart);
 // POST route to remove itens from cart:
 router.post('/cart-delete-item', isAuth, shopController.postCartDeleteProduct);
 
-// POST route for creating an order from the current user cart:
-router.post('/create-order', isAuth, shopController.postOrder);
-
 // GET route to view all orders from the current user:
 router.get('/orders', isAuth, shopController.getOrders);
 
 // GET route to donwload invoices:
 router.get('/orders/:orderId', isAuth, shopController.getInvoice);
 
-// router.get("/checkout", shopController.getCheckout);
+// GET route to checkout:
+router.get('/checkout', isAuth, shopController.getCheckout);
 
 // export router obj:
 module.exports = router;

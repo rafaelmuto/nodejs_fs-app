@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 
+const SETUP = require('../setup');
+
 // importing models:
 const productModel = require('../models/productModel');
 const orderModel = require('../models/orderModel');
@@ -158,12 +160,48 @@ exports.postCartDeleteProduct = (req, res, nxt) => {
     });
 };
 
-exports.postOrder = (req, res, nxt) => {
-  console.log('==> shopController: postOrder');
+exports.getCheckout = (req, res, nxt) => {
+  console.log('==> shopController: getCheckout');
   req.user
     .populate('cart.items.productId')
     .execPopulate()
     .then(user => {
+      const products = user.cart.items;
+      let total = 0;
+      products.forEach(item => {
+        total += item.qnt * item.productId.price;
+      });
+      res.render('shop/checkout', {
+        pageTitle: 'Checkout',
+        path: '/checkout',
+        products: products,
+        totalSum: total
+      });
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return nxt(error);
+    });
+};
+
+exports.postOrder = (req, res, nxt) => {
+  console.log('==> shopController: postOrder');
+
+  // stripe:
+  const stripe = require('stripe')(SETUP.STRIPE_SECRET_KEY);
+  const token = req.body.stripeToken;
+
+  let total = 0;
+
+  req.user
+    .populate('cart.items.productId')
+    .execPopulate()
+    .then(user => {
+      user.cart.items.forEach(p => {
+        total += p.qnt * p.productId.price;
+      });
+
       const products = user.cart.items.map(i => {
         return { qnt: i.qnt, productData: { ...i.productId._doc } };
       });
@@ -175,6 +213,15 @@ exports.postOrder = (req, res, nxt) => {
         products: products
       });
       return order.save();
+    })
+    .then(res => {
+      const charge = stripe.charges.create({
+        amount: total * 100,
+        currency: 'usd',
+        description: 'test order',
+        source: token,
+        metadata: { order_id: res._id.toString() }
+      });
     })
     .then(() => {
       req.user.clearCart();
@@ -206,13 +253,6 @@ exports.getOrders = (req, res, nxt) => {
       return nxt(error);
     });
 };
-
-// exports.getCheckout = (req, res, nxt) => {
-//   res.render('shop/checkout', {
-//     pageTitle: 'Checkout',
-//     path: '/checkout'
-//   });
-// };
 
 exports.getInvoice = (req, res, nxt) => {
   console.log('==> shopController: getInvoice');
