@@ -3,8 +3,10 @@ console.log('==> starting api.js');
 // importing modules:
 const express = require('express');
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
 // importing resources:
+const SETUP = require('../setup');
 const feedRouter = require('./routes/feedRouter');
 
 // initilzing express.js:
@@ -30,4 +32,11 @@ app.get('/', (req, res, nxt) => {
   res.json({ teste: 'dummy' });
 });
 
-app.listen(8080);
+mongoose
+  .connect(SETUP.MONGODB_URI_API, { useNewUrlParser: true })
+  .then(res => {
+    console.log('-> Mongoose Connection OK!');
+    console.log('... starting server on port 8080');
+    app.listen(SETUP.API_SERVER_PORT);
+  })
+  .catch(err => console.log(err));
