@@ -50,7 +50,7 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('URL')
+    fetch('http://localhost:8080/feed/posts')
       .then(res => {
         if (res.status !== 200) {
           throw new Error('Failed to fetch posts.');
@@ -106,12 +106,22 @@ class Feed extends Component {
       editLoading: true
     });
     // Set up data (with image!)
-    let url = 'URL';
+    let url = 'http://localhost:8080/feed/post';
+    let method = 'POST';
     if (this.state.editPost) {
       url = 'URL';
     }
 
-    fetch(url)
+    fetch(url, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        title: postData.title,
+        content: postData.content
+      })
+    })
       .then(res => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('Creating or editing a post failed!');
@@ -129,9 +139,7 @@ class Feed extends Component {
         this.setState(prevState => {
           let updatedPosts = [...prevState.posts];
           if (prevState.editPost) {
-            const postIndex = prevState.posts.findIndex(
-              p => p._id === prevState.editPost._id
-            );
+            const postIndex = prevState.posts.findIndex(p => p._id === prevState.editPost._id);
             updatedPosts[postIndex] = post;
           } else if (prevState.posts.length < 2) {
             updatedPosts = prevState.posts.concat(post);
@@ -193,22 +201,10 @@ class Feed extends Component {
     return (
       <Fragment>
         <ErrorHandler error={this.state.error} onHandle={this.errorHandler} />
-        <FeedEdit
-          editing={this.state.isEditing}
-          selectedPost={this.state.editPost}
-          loading={this.state.editLoading}
-          onCancelEdit={this.cancelEditHandler}
-          onFinishEdit={this.finishEditHandler}
-        />
+        <FeedEdit editing={this.state.isEditing} selectedPost={this.state.editPost} loading={this.state.editLoading} onCancelEdit={this.cancelEditHandler} onFinishEdit={this.finishEditHandler} />
         <section className="feed__status">
           <form onSubmit={this.statusUpdateHandler}>
-            <Input
-              type="text"
-              placeholder="Your status"
-              control="input"
-              onChange={this.statusInputChangeHandler}
-              value={this.state.status}
-            />
+            <Input type="text" placeholder="Your status" control="input" onChange={this.statusInputChangeHandler} value={this.state.status} />
             <Button mode="flat" type="submit">
               Update
             </Button>
@@ -225,28 +221,11 @@ class Feed extends Component {
               <Loader />
             </div>
           )}
-          {this.state.posts.length <= 0 && !this.state.postsLoading ? (
-            <p style={{ textAlign: 'center' }}>No posts found.</p>
-          ) : null}
+          {this.state.posts.length <= 0 && !this.state.postsLoading ? <p style={{ textAlign: 'center' }}>No posts found.</p> : null}
           {!this.state.postsLoading && (
-            <Paginator
-              onPrevious={this.loadPosts.bind(this, 'previous')}
-              onNext={this.loadPosts.bind(this, 'next')}
-              lastPage={Math.ceil(this.state.totalPosts / 2)}
-              currentPage={this.state.postPage}
-            >
+            <Paginator onPrevious={this.loadPosts.bind(this, 'previous')} onNext={this.loadPosts.bind(this, 'next')} lastPage={Math.ceil(this.state.totalPosts / 2)} currentPage={this.state.postPage}>
               {this.state.posts.map(post => (
-                <Post
-                  key={post._id}
-                  id={post._id}
-                  author={post.creator.name}
-                  date={new Date(post.createdAt).toLocaleDateString('en-US')}
-                  title={post.title}
-                  image={post.imageUrl}
-                  content={post.content}
-                  onStartEdit={this.startEditPostHandler.bind(this, post._id)}
-                  onDelete={this.deletePostHandler.bind(this, post._id)}
-                />
+                <Post key={post._id} id={post._id} author={post.creator.name} date={new Date(post.createdAt).toLocaleDateString('en-US')} title={post.title} image={post.imageUrl} content={post.content} onStartEdit={this.startEditPostHandler.bind(this, post._id)} onDelete={this.deletePostHandler.bind(this, post._id)} />
               ))}
             </Paginator>
           )}
