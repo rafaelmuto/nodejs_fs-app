@@ -5,7 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 // importing resources:
-const feedRouter = require('../routes/feedRouter');
+const feedRouter = require('./routes/feedRouter');
 
 // initilzing express.js:
 const app = express();
@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 
 app.use('/feed', feedRouter);
 
-app.get((req, res, nxt) => {
+app.get('/', (req, res, nxt) => {
   res.json({ teste: 'dummy' });
 });
 
