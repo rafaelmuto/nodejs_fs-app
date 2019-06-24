@@ -3,20 +3,17 @@ const postModel = require('../models/postModel');
 
 exports.getPosts = (req, res, nxt) => {
   console.log('==> feedController: getPosts');
-  res.status(200).json({
-    posts: [
-      {
-        _id: '123',
-        title: 'dummy post #1',
-        content: 'this is a dummy post data',
-        imageUrl: 'images/TS11B39KPLP_Zoom_F_1.jpg',
-        creator: {
-          name: 'dummy user'
-        },
-        createdAt: new Date()
+  postModel
+    .find()
+    .then(posts => {
+      res.status(200).json({ message: 'Fetched posts successfully.', posts: posts });
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
       }
-    ]
-  });
+      nxt(err);
+    });
 };
 
 exports.createPost = (req, res, nxt) => {
@@ -47,6 +44,28 @@ exports.createPost = (req, res, nxt) => {
         message: 'Post created successfully!',
         post: result
       });
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      nxt(err);
+    });
+};
+
+exports.getPost = (req, res, nxt) => {
+  console.log('==> feedController: getPost');
+  const postId = req.params.postId;
+
+  postModel
+    .findById(postId)
+    .then(post => {
+      if (!post) {
+        const err = new Error('Could not fund post.');
+        err.statusCode = 404;
+        throw err;
+      }
+      res.status(200).json({ message: 'Post fetched.', post: post });
     })
     .catch(err => {
       if (!err.statusCode) {
