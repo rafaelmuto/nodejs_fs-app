@@ -4,6 +4,7 @@ console.log('==> starting api.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const path = require('path');
 
 // importing resources:
 const SETUP = require('../setup');
@@ -17,6 +18,8 @@ const app = express();
 // initializing body-parser for json parse:
 // application/json
 app.use(bodyParser.json());
+// serving static folder:
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 // middleware to allow CORS (Cross-Origin Resource Sharing):
 app.use((req, res, nxt) => {
