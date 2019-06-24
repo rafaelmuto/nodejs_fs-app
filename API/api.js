@@ -27,9 +27,12 @@ app.use((req, res, nxt) => {
 });
 
 app.use('/feed', feedRouter);
-
-app.get('/', (req, res, nxt) => {
-  res.json({ teste: 'dummy' });
+// error route middleware:
+app.use((err, req, res, nxt) => {
+  console.log(err);
+  const status = err.statusCode || 500;
+  const message = err.message;
+  res.status(status).json({ message: message });
 });
 
 mongoose
