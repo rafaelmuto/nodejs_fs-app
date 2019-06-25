@@ -5,10 +5,23 @@ const path = require('path');
 
 exports.getPosts = (req, res, nxt) => {
   console.log('==> feedController: getPosts');
+
+  const currentPage = req.query.page || 1;
+  const perPage = 2;
+  let totalItems;
+
   postModel
     .find()
+    .countDocuments()
+    .then(count => {
+      totalItems = count;
+      return postModel
+        .find()
+        .skip((currentPage - 1) * perPage)
+        .limit(perPage);
+    })
     .then(posts => {
-      res.status(200).json({ message: 'Fetched posts successfully.', posts: posts });
+      res.status(200).json({ message: 'Fetched posts successfully.', posts: posts, totalItems: totalItems });
     })
     .catch(err => {
       if (!err.statusCode) {
