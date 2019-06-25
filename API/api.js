@@ -5,6 +5,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
+const multer = require('multer');
 
 // importing resources:
 const SETUP = require('../setup');
@@ -13,11 +14,31 @@ const feedRouter = require('./routes/feedRouter');
 // initilzing express.js:
 const app = express();
 
+// multer setup:
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toString() + '-' + file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 // ==> middlewares:
 
 // initializing body-parser for json parse:
 // application/json
 app.use(bodyParser.json());
+// multer:
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 // serving static folder:
 app.use('/images', express.static(path.join(__dirname, 'images')));
 

@@ -26,13 +26,19 @@ exports.createPost = (req, res, nxt) => {
     throw error;
   }
 
+  if (!req.file) {
+    const error = new Error('No image provided.');
+    error.statusCode = 422;
+    throw error;
+  }
+
   const title = req.body.title;
   const content = req.body.content;
-
+  const imageUrl = req.file.path;
   const post = new postModel({
     title: title,
     content: content,
-    imageUrl: 'images/TS11B39KPLP_Zoom_F_1.jpg',
+    imageUrl: imageUrl,
     creator: { name: 'DummyUser' }
   });
 
