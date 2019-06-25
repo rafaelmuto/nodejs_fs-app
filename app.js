@@ -22,7 +22,7 @@ const csrf = require('csurf');
 // -> connect-flash: used in combination with redirects, ensuring that the message
 //    is available to the next page that is to be rendered.
 const flash = require('connect-flash');
-// -> Multer: handling multipart/form-data, which is primarily used for uploading files.
+// -> Multer: middleware for handling `multipart/form-data`, which is primarily used for uploading files.
 const multer = require('multer');
 
 // importing routes:
