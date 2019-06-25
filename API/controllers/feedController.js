@@ -134,6 +134,34 @@ exports.updatePost = (req, res, nxt) => {
     });
 };
 
+exports.deletePost = (req, res, nxt) => {
+  console.log('==> feedControler: deletePost');
+
+  const postId = req.params.postId;
+  postModel
+    .findById(postId)
+    .then(post => {
+      // cheack login info
+      if (!post) {
+        const err = new Error('Could not fund post.');
+        err.statusCode = 404;
+        throw err;
+      }
+      clearImage(post.imageUrl);
+      return postModel.findByIdAndRemove(postId);
+    })
+    .then(result => {
+      console.log(result);
+      res.status(200).json({ message: 'deleted post.' });
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      nxt(err);
+    });
+};
+
 const clearImage = filePath => {
   filePath = path.join(__dirname, '..', filePath);
   fs.unlink(filePath, err => console.log(err));
