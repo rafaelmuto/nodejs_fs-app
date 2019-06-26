@@ -10,6 +10,7 @@ const multer = require('multer');
 // importing resources:
 const SETUP = require('../setup');
 const feedRouter = require('./routes/feedRouter');
+const authRouter = require('./routes/authRouter');
 
 // initilzing express.js:
 const app = express();
@@ -51,12 +52,14 @@ app.use((req, res, nxt) => {
 });
 
 app.use('/feed', feedRouter);
+app.use('/auth', authRouter);
 // error route middleware:
 app.use((err, req, res, nxt) => {
   console.log(err);
   const status = err.statusCode || 500;
   const message = err.message;
-  res.status(status).json({ message: message });
+  const data = err.data;
+  res.status(status).json({ message: message, data: data });
 });
 
 mongoose
