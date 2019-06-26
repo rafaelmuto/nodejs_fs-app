@@ -38,6 +38,7 @@ exports.createPost = (req, res, nxt) => {
   if (!errors.isEmpty()) {
     const error = new Error('Validation failed, entered data is incorrect.');
     error.statusCode = 422;
+    error.data = errors.array();
     throw error;
   }
 
@@ -103,6 +104,7 @@ exports.updatePost = (req, res, nxt) => {
   if (!errors.isEmpty()) {
     const error = new Error('Validation failed, entered data is incorrect.');
     error.statusCode = 422;
+    error.data = errors.array();
     throw error;
   }
 
