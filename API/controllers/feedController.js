@@ -187,6 +187,13 @@ exports.deletePost = (req, res, nxt) => {
       return postModel.findByIdAndRemove(postId);
     })
     .then(result => {
+      return userModel.findById(req.userId);
+    })
+    .then(user => {
+      user.posts.pull(postId);
+      return user.save();
+    })
+    .then(result => {
       console.log(result);
       res.status(200).json({ message: 'deleted post.' });
     })
