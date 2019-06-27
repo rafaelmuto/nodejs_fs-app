@@ -69,3 +69,51 @@ exports.login = (req, res, nxt) => {
       nxt(err);
     });
 };
+
+exports.getStatus = (req, res, nxt) => {
+  console.log('==> feedController: getStatus');
+
+  const userId = req.userId;
+
+  userModel
+    .findById(userId)
+    .then(user => {
+      if (!user) {
+        const error = new Error('user not found!');
+        error.statusCode = 404;
+        throw error;
+      }
+      res.status(200).json({ message: 'user status successfully recovered', status: user.status });
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      nxt(err);
+    });
+};
+
+exports.updateStatus = (req, res, nxt) => {
+  const newStatus = req.body.status;
+
+  userModel
+    .findById(req.userId)
+    .then(user => {
+      if (!user) {
+        const error = new Error('user not found!');
+        error.statusCode = 404;
+        throw error;
+      }
+      user.status = newStatus;
+      return user.save();
+    })
+    .then(result => {
+      res.status(200).json({ message: 'user status updated' });
+    })
+    .catch(err => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      nxt(err);
+    });
+};
