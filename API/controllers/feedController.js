@@ -15,6 +15,7 @@ exports.getPosts = async (req, res, nxt) => {
     const totalItems = await postModel.find().countDocuments();
     const posts = await postModel
       .find()
+      .populate('creator')
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
 
@@ -171,7 +172,6 @@ exports.deletePost = async (req, res, nxt) => {
     await postModel.findByIdAndRemove(postId);
 
     const user = await userModel.findById(req.userId);
-
     user.posts.pull(postId);
     await user.save();
 
