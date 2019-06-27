@@ -1,7 +1,9 @@
 const { validationResult } = require('express-validator');
-const postModel = require('../models/postModel');
 const fs = require('fs');
 const path = require('path');
+
+const postModel = require('../models/postModel');
+const userModel = require('../models/userModel');
 
 exports.getPosts = (req, res, nxt) => {
   console.log('==> feedController: getPosts');
@@ -51,20 +53,30 @@ exports.createPost = (req, res, nxt) => {
   const title = req.body.title;
   const content = req.body.content;
   const imageUrl = req.file.path;
+  let creator;
+
   const post = new postModel({
     title: title,
     content: content,
     imageUrl: imageUrl,
-    creator: { name: 'DummyUser' }
+    creator: req.userId
   });
 
   post
     .save()
     .then(result => {
-      console.log(result);
+      return userModel.findById(req.userId);
+    })
+    .then(user => {
+      creator = user;
+      user.posts.push(post);
+      return user.save();
+    })
+    .then(result => {
       res.status(201).json({
         message: 'Post created successfully!',
-        post: result
+        post: post,
+        creator: { _id: creator._id, name: creator.name }
       });
     })
     .catch(err => {
