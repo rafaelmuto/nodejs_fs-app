@@ -2,8 +2,8 @@ const { validationResult } = require('express-validator');
 const fs = require('fs');
 const path = require('path');
 
-const postModel = require('../models/postModel');
-const userModel = require('../models/userModel');
+const postModel = require('../models/postApiModel');
+const userModel = require('../models/userApiModel');
 
 exports.getPosts = async (req, res, nxt) => {
   console.log('==> feedController: getPosts');

@@ -1,9 +1,9 @@
 const express = require('express');
 const { body } = require('express-validator');
 
-const authController = require('../controllers/authController');
-const userModel = require('../models/userModel');
-const isAuth = require('../middlewares/isAuth');
+const authApiController = require('../controllers/authApiController');
+const userModel = require('../models/userApiModel');
+const apiAuth = require('../middlewares/apiAuth');
 
 const router = express.Router();
 
@@ -29,13 +29,13 @@ router.put(
   authController.signup
 );
 
-router.post('/login', authController.login);
+router.post('/login', authApiController.login);
 
-router.get('/status', isAuth, authController.getStatus);
+router.get('/status', apiAuth, authApiController.getStatus);
 
 router.patch(
   '/status',
-  isAuth,
+  apiAuth,
   body('status')
     .trim()
     .not()
