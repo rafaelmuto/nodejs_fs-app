@@ -4,6 +4,7 @@ const path = require('path');
 
 const postModel = require('../models/postModel');
 const userModel = require('../models/userModel');
+const io = require('../socket');
 
 exports.getPosts = async (req, res, nxt) => {
   console.log('==> feedController: getPosts');
@@ -16,6 +17,7 @@ exports.getPosts = async (req, res, nxt) => {
     const posts = await postModel
       .find()
       .populate('creator')
+      .sort({ createdAt: -1 })
       .skip((currentPage - 1) * perPage)
       .limit(perPage);
 
@@ -62,6 +64,8 @@ exports.createPost = async (req, res, nxt) => {
 
     user.posts.push(post);
     await user.save();
+
+    io.getIO().emit('posts', { action: 'create', post: { ...post._doc, creator: { _id: req.userId, name: user.name } } });
 
     res.status(201).json({
       message: 'Post created successfully!',
@@ -122,14 +126,14 @@ exports.updatePost = async (req, res, nxt) => {
   }
 
   try {
-    const post = await postModel.findById(postId);
+    const post = await postModel.findById(postId).populate('creator');
 
     if (!post) {
       const err = new Error('Could not fund post.');
       err.statusCode = 404;
       throw err;
     }
-    if (post.creator.toString() !== req.userId) {
+    if (post.creator._id.toString() !== req.userId) {
       const error = new Error('Not authorized!');
       error.statusCode = 403;
       throw error;
@@ -140,7 +144,9 @@ exports.updatePost = async (req, res, nxt) => {
     post.title = title;
     post.content = content;
     post.imageUrl = imageUrl;
-    post.save();
+    const result = post.save();
+
+    io.getIO().emit('posts', { action: 'update', post: result });
 
     res.status(200).json({ message: 'Post updated.', post: post });
   } catch (err) {
@@ -174,6 +180,8 @@ exports.deletePost = async (req, res, nxt) => {
     const user = await userModel.findById(req.userId);
     user.posts.pull(postId);
     await user.save();
+
+    io.getIO().emit('posts', { action: 'delete', post: postId });
 
     res.status(200).json({ message: 'deleted post.' });
   } catch (err) {
