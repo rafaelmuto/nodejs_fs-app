@@ -92,19 +92,20 @@ app.use(flash());
 
 // this middleware registers the userModel obj to the req:
 app.use((req, res, nxt) => {
-  console.log('::: app ::: Registering User');
+  console.log('::: server request :::');
+  console.log('=> Registering User');
   if (req.session.user) {
-    console.log('-> req.session.user._id:', req.session.user._id);
+    console.log(' -> req.session.user._id:', req.session.user._id);
     userModel
       .findById(req.session.user)
       .then(user => {
         req.user = user;
-        console.log('-> req.user', req.user);
+        console.log(' -> req.user', req.user);
         nxt();
       })
       .catch(err => nxt(new Error(err)));
   } else {
-    console.log('-> no user...');
+    console.log(' -> no user...');
     req.user = null;
     nxt();
   }
@@ -117,10 +118,10 @@ app.post('/create-order', isAuth, shopController.postOrder);
 app.use(csrfProtection);
 // setting local variables to all redered views:
 app.use((req, res, nxt) => {
-  console.log('-> res.locals.isAuth: ', req.session.isLoggedIn);
+  console.log(' -> res.locals.isAuth: ', req.session.isLoggedIn);
   res.locals.isAuth = req.session.isLoggedIn;
   let token = req.csrfToken();
-  console.log('-> res.locals.csrfToken: ', token);
+  console.log(' -> res.locals.csrfToken: ', token);
   res.locals.csrfToken = token;
   nxt();
 });
@@ -146,7 +147,7 @@ mongoose
   )
   .then(result => {
     console.log('=> mongoose connected!');
-    console.log('-> starting server listen @ port:', SETUP.SERVER_PORT);
+    console.log(' -> starting server listen @ port:', SETUP.SERVER_PORT);
     app.listen(SETUP.SERVER_PORT);
   })
   .catch(err => console.log(err));

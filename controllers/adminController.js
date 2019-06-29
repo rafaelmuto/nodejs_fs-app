@@ -12,7 +12,6 @@ exports.getAddProduct = (req, res, nxt) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
-    // pug doesnt care about having or not the edit: false here:
     edit: false,
     hasError: false
   });
