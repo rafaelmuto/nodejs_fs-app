@@ -11,7 +11,6 @@ const bodyParser = require('body-parser');
 // -> mongoose: Mongoose is a MongoDB object modeling tool designed to work in an
 //    asynchronous environment.
 const mongoose = require('mongoose');
-const mongooseApi = require('mongoose');
 // -> express-session: storing session data in the server-side.
 const session = require('express-session');
 // -> connect-mongodb-session: This module exports a single function which takes an
@@ -30,8 +29,6 @@ const multer = require('multer');
 const adminRoutes = require('./routes/adminRouter');
 const shopRoutes = require('./routes/shopRouter');
 const authRoutes = require('./routes/authRouter');
-const feedApiRouter = require('./routes/feedApiRouter');
-const authApiRouter = require('./routes/authRouter');
 // importin constrollers:
 const errorController = require('./controllers/errorController');
 const shopController = require('./controllers/shopController');
@@ -41,10 +38,8 @@ const isAuth = require('./middlewares/isAuth');
 // importing userModel:
 const userModel = require('./models/userModel');
 
-// initializing express.js:
+// creating the server(?) obj with the express():
 const app = express();
-const api = express();
-
 // creating  new connect-mongodb-session:
 const store = new MongoDBStore({
   uri: SETUP.MONGODB_URI,
@@ -70,7 +65,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// ==> Middlewares WEB:
+// ==> Middlewares:
 
 // setting up the view engine (pug):
 app.set('view engine', 'pug');
@@ -153,43 +148,5 @@ mongoose
     console.log('=> mongoose connected!');
     console.log('-> starting server listen @ port:', SETUP.SERVER_PORT);
     app.listen(SETUP.SERVER_PORT);
-  })
-  .catch(err => console.log(err));
-
-// ==> middlewares API:
-
-// initializing body-parser for json parse:
-// apilication/json
-api.use(bodyParser.json());
-// multer:
-api.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
-// serving static folder:
-api.use('/images', express.static(path.join(__dirname, 'images')));
-
-// middleware to allow CORS (Cross-Origin Resource Sharing):
-api.use((req, res, nxt) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  nxt();
-});
-
-api.use('/feed', feedApiRouter);
-api.use('/auth', authApiRouter);
-// error route middleware:
-api.use((err, req, res, nxt) => {
-  console.log(err);
-  const status = err.statusCode || 500;
-  const message = err.message;
-  const data = err.data;
-  res.status(status).json({ message: message, data: data });
-});
-
-mongooseApi
-  .connect(SETUP.MONGODB_URI_API, { useNewUrlParser: true })
-  .then(res => {
-    console.log('-> Mongoose Connection OK!');
-    console.log('... starting server on port ' + SETUP.API_SERVER_PORT);
-    api.listen(SETUP.API_SERVER_PORT);
   })
   .catch(err => console.log(err));

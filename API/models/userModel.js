@@ -26,4 +26,4 @@ const userSchema = new Schema({
   ]
 });
 
-module.exports = mongoose.model('ApiUser', userSchema);
+module.exports = mongoose.model('User', userSchema);

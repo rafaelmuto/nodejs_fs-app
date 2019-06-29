@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.signup = (req, res, nxt) => {
-  console.log('==> authApiController: signup');
+  console.log('==> authController: signup');
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     const error = new Error('Validation failed.');
@@ -38,8 +38,6 @@ exports.signup = (req, res, nxt) => {
 };
 
 exports.login = (req, res, nxt) => {
-  console.log('==> authApiController: login');
-
   const email = req.body.email;
   const password = req.body.password;
   let loadedUser;
@@ -73,7 +71,7 @@ exports.login = (req, res, nxt) => {
 };
 
 exports.getStatus = (req, res, nxt) => {
-  console.log('==> authApiController: getStatus');
+  console.log('==> feedController: getStatus');
 
   const userId = req.userId;
 
@@ -96,7 +94,6 @@ exports.getStatus = (req, res, nxt) => {
 };
 
 exports.updateStatus = (req, res, nxt) => {
-  console.log('==> authApiController: updateStatus');
   const newStatus = req.body.status;
 
   userModel
