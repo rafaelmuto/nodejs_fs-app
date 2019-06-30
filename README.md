@@ -1,7 +1,11 @@
-# nodejs_fs-app
+# nodejs_webapp
 
-this is a fullstack application for a webstore
-running on node.js with express.js
+A application for a web store running on node.js + express + mongoDB.
+- MCV architecture
+- CRUD functionallities for users and products on mongoDB
+- full authentication with signup/login encryption, CRSF protection
+- basic checkout with payment API
+- e-mailing system
 
 1. run `npm install` to install the dependencies
 2. write your setup.js file exposing these variables:
