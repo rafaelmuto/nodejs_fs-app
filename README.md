@@ -1,6 +1,6 @@
 # nodejs_webapp
 
-A application for a web store running on node.js + express + mongoDB.
+An application for a web store running on node.js + express + mongoDB.
 - MCV architecture
 - CRUD functionallities for users and products on mongoDB
 - full authentication with signup/login encryption, CRSF protection
