@@ -3,8 +3,6 @@ const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 
-const SETUP = require('../setup');
-
 // importing models:
 const productModel = require('../models/productModel');
 const orderModel = require('../models/orderModel');
@@ -189,7 +187,7 @@ exports.postOrder = (req, res, nxt) => {
   console.log('==> shopController: postOrder');
 
   // stripe:
-  const stripe = require('stripe')(SETUP.STRIPE_SECRET_KEY);
+  const stripe = require('stripe')(process.env.STRIPE_KEY);
   const token = req.body.stripeToken;
 
   let total = 0;

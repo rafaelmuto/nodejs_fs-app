@@ -9,16 +9,13 @@ const { validationResult } = require('express-validator/check');
 // importing node.js crypto pack:
 const crypto = require('crypto');
 
-// importing credencials and settings:
-const SETUP = require('../setup');
-
 const userModel = require('../models/userModel');
 
 // initialising nodemailer
 const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
-      api_key: SETUP.SENDGRID_APIKEY
+      api_key: process.env.SENDGRID_APIKEY
     }
   })
 );

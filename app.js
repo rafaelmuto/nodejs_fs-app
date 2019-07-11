@@ -1,8 +1,5 @@
 console.log('==> starting app.js');
 
-// importing credencials & settings:
-const SETUP = require('./setup');
-
 // ==> importing express.js and other modules:
 const express = require('express');
 const path = require('path');
@@ -42,7 +39,7 @@ const userModel = require('./models/userModel');
 const app = express();
 // creating  new connect-mongodb-session:
 const store = new MongoDBStore({
-  uri: SETUP.MONGODB_URI,
+  uri: process.env.MONGODB_URI,
   collection: 'sessions'
 });
 // initialising CSRF protection (csurf):
@@ -81,7 +78,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use(
   session({
-    secret: SETUP.EXPSESS_SECRET,
+    secret: process.env.EXPRESS_SECRET,
     resave: false,
     saveUninitialized: false,
     store: store
@@ -139,7 +136,7 @@ app.use(errorController.get500);
 // ==> Connecting to the database and Starting app.server:
 mongoose
   .connect(
-    SETUP.MONGODB_URI,
+    process.env.MONGODB_URI,
     // warning: (node:70332) DeprecationWarning: current URL string parser is deprecated,
     // and will be removed in a future version. To use the new parser, pass option
     // { useNewUrlParser: true } to MongoClient.connect.
@@ -147,7 +144,7 @@ mongoose
   )
   .then(result => {
     console.log('=> mongoose connected!');
-    console.log(' -> starting server listen @ port:', SETUP.SERVER_PORT);
-    app.listen(SETUP.SERVER_PORT);
+    console.log(' -> starting server listen @ port:', process.env.PORT || 3000);
+    app.listen(process.env.PORT || 3000);
   })
   .catch(err => console.log(err));
