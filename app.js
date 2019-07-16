@@ -23,6 +23,8 @@ const flash = require('connect-flash');
 const multer = require('multer');
 // -> Helmet: Helmet helps you secure your Express apps by setting various HTTP headers. It’s not a silver bullet, but it can help!
 const helmet = require('helmet');
+// -> Compression: Node.js compression middleware.
+const compression = require('compression');
 
 // importing routes:
 const adminRoutes = require('./routes/adminRouter');
@@ -74,6 +76,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 
 app.use(helmet());
+app.use(compression());
 
 // serving static files:
 app.use(express.static(path.join(__dirname, 'public')));
