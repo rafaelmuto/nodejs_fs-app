@@ -21,6 +21,8 @@ const csrf = require('csurf');
 const flash = require('connect-flash');
 // -> Multer: middleware for handling `multipart/form-data`, which is primarily used for uploading files.
 const multer = require('multer');
+// -> Helmet: Helmet helps you secure your Express apps by setting various HTTP headers. It’s not a silver bullet, but it can help!
+const helmet = require('helmet');
 
 // importing routes:
 const adminRoutes = require('./routes/adminRouter');
@@ -31,11 +33,10 @@ const errorController = require('./controllers/errorController');
 const shopController = require('./controllers/shopController');
 // importing isAuth middleware:
 const isAuth = require('./middlewares/isAuth');
-
 // importing userModel:
 const userModel = require('./models/userModel');
 
-// creating the server(?) obj with the express():
+// creating the server obj with the express():
 const app = express();
 // creating  new connect-mongodb-session:
 const store = new MongoDBStore({
@@ -72,13 +73,15 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 
+app.use(helmet());
+
 // serving static files:
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use(
   session({
-    secret: process.env.EXPRESS_SECRET,
+    secret: 'secret_word_here',
     resave: false,
     saveUninitialized: false,
     store: store
