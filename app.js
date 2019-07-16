@@ -3,6 +3,7 @@ console.log('==> starting app.js');
 // ==> importing express.js and other modules:
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 // -> body-parser: parsing body data into req.body
 const bodyParser = require('body-parser');
 // -> mongoose: Mongoose is a MongoDB object modeling tool designed to work in an
@@ -25,6 +26,8 @@ const multer = require('multer');
 const helmet = require('helmet');
 // -> Compression: Node.js compression middleware.
 const compression = require('compression');
+// -> Morgan: HTTP request logger middleware for node.js
+const morgan = require('morgan');
 
 // importing routes:
 const adminRoutes = require('./routes/adminRouter');
@@ -75,8 +78,12 @@ app.set('views', 'views');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'));
 
+// creating a write stream to write the accesslogs from morgan:
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'acess.log'), { flags: 'a' });
+
 app.use(helmet());
 app.use(compression());
+app.use(morgan('combined', { stream: accessLogStream }));
 
 // serving static files:
 app.use(express.static(path.join(__dirname, 'public')));
