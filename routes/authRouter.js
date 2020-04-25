@@ -42,7 +42,7 @@ router.post(
     .isEmail()
     .withMessage('Please enter a valid e-mail')
     .custom((value, { req }) => {
-      return userModel.findOne({ email: value }).then(userDoc => {
+      return userModel.findOne({ email: value }).then((userDoc) => {
         if (userDoc) {
           return Promise.reject('This e-mail is already registered!');
         }

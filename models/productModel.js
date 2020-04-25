@@ -5,19 +5,19 @@ const mongoose = require('mongoose');
 const productSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true
+    required: true,
   },
   price: {
     type: Number,
-    requeire: true
+    requeire: true,
   },
   description: String,
   imageUrl: String,
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
-  }
+    required: true,
+  },
 });
 
 module.exports = mongoose.model('Product', productSchema);

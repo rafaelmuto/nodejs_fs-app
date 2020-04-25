@@ -13,7 +13,7 @@ exports.getAddProduct = (req, res, nxt) => {
     pageTitle: 'Add Product',
     path: '/admin/add-product',
     edit: false,
-    hasError: false
+    hasError: false,
   });
 };
 
@@ -34,9 +34,9 @@ exports.postAddProduct = (req, res, nxt) => {
       product: {
         title: title,
         price: price,
-        description: description
+        description: description,
       },
-      errorMessage: 'image upload problem'
+      errorMessage: 'image upload problem',
     });
   }
 
@@ -52,9 +52,9 @@ exports.postAddProduct = (req, res, nxt) => {
       product: {
         title: title,
         price: price,
-        description: description
+        description: description,
       },
-      errorMessage: errors.array()[0].msg
+      errorMessage: errors.array()[0].msg,
     });
   }
 
@@ -66,17 +66,17 @@ exports.postAddProduct = (req, res, nxt) => {
     description: description,
     imageUrl: imageUrl,
     // mongoose will automatically get the _id from the userModel Obj:
-    userId: req.user
+    userId: req.user,
   });
 
   product
     .save()
-    .then(result => {
+    .then((result) => {
       // console.log(result);
       console.log('-> new product added:', product._id);
       res.redirect('/admin/products');
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -93,7 +93,7 @@ exports.getEditProduct = (req, res, nxt) => {
   const prodId = req.params.productId;
   productModel
     .findById(prodId)
-    .then(product => {
+    .then((product) => {
       if (!product) {
         console.log('-> no such product found');
         res.redirect('/');
@@ -105,10 +105,10 @@ exports.getEditProduct = (req, res, nxt) => {
         edit: editMode,
         hasError: false,
         product: product,
-        errorMessage: null
+        errorMessage: null,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -136,15 +136,15 @@ exports.postEditProduct = (req, res, nxt) => {
         _id: prodId,
         title: updatedTitle,
         price: updatedPrice,
-        description: updatedDescription
+        description: updatedDescription,
       },
-      errorMessage: errors.array()[0].msg
+      errorMessage: errors.array()[0].msg,
     });
   }
 
   productModel
     .findById(prodId)
-    .then(product => {
+    .then((product) => {
       if (product.userId.toString() !== req.user._id.toString()) {
         console.log('-> wrong userId...');
         return res.redirect('/');
@@ -158,11 +158,11 @@ exports.postEditProduct = (req, res, nxt) => {
       }
 
       console.log('-> edited product: ', product._id);
-      return product.save().then(result => {
+      return product.save().then((result) => {
         res.redirect('/admin/products');
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -174,15 +174,15 @@ exports.getAdminProducts = (req, res, nxt) => {
   productModel
     .find({ userId: req.user._id })
     // .populate("userId")
-    .then(products => {
+    .then((products) => {
       // console.log("-> products list:", products);
       res.render('admin/products-list', {
         pageTitle: 'Admin Products',
         path: '/admin/products',
-        products: products
+        products: products,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -195,7 +195,7 @@ exports.deleteProduct = (req, res, nxt) => {
 
   productModel
     .findById(prodId)
-    .then(product => {
+    .then((product) => {
       if (!product) {
         return nxt(new Error('Product not found!'));
       } else {
@@ -207,7 +207,7 @@ exports.deleteProduct = (req, res, nxt) => {
       console.log('-> product deleted:', prodId);
       res.status(200).json({ message: 'Ok!' });
     })
-    .catch(err => {
+    .catch((err) => {
       res.status(500).json({ message: 'error...' });
     });
 };

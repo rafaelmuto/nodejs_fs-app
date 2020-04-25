@@ -23,14 +23,14 @@ exports.getIndex = (req, res, nxt) => {
   productModel
     .find()
     .countDocuments()
-    .then(numProducts => {
+    .then((numProducts) => {
       totalItems = numProducts;
       return productModel
         .find()
         .skip((page - 1) * ITENS_PER_PAGE)
         .limit(ITENS_PER_PAGE);
     })
-    .then(products => {
+    .then((products) => {
       // console.log("-> products list:", products);
       return res.render('shop/index', {
         pageTitle: 'Shop',
@@ -38,10 +38,10 @@ exports.getIndex = (req, res, nxt) => {
         products: products,
         currentPage: page,
         currentPage: page,
-        totalPages: Math.ceil(totalItems / ITENS_PER_PAGE)
+        totalPages: Math.ceil(totalItems / ITENS_PER_PAGE),
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -60,24 +60,24 @@ exports.getProducts = (req, res, nxt) => {
   productModel
     .find()
     .countDocuments()
-    .then(numProducts => {
+    .then((numProducts) => {
       totalItems = numProducts;
       return productModel
         .find()
         .skip((page - 1) * ITENS_PER_PAGE)
         .limit(ITENS_PER_PAGE);
     })
-    .then(products => {
+    .then((products) => {
       // console.log("-> products list:", products);
       return res.render('shop/product-list', {
         pageTitle: 'Products',
         path: '/products',
         products: products,
         currentPage: page,
-        totalPages: Math.ceil(totalItems / ITENS_PER_PAGE)
+        totalPages: Math.ceil(totalItems / ITENS_PER_PAGE),
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -89,15 +89,15 @@ exports.getProduct = (req, res, nxt) => {
   const prodId = req.params.productId;
   productModel
     .findById(prodId)
-    .then(product => {
+    .then((product) => {
       console.log('-> product:', product._id);
       res.render('shop/product-detail', {
         pageTitle: product.title,
         path: '/products',
-        product: product
+        product: product,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -109,16 +109,16 @@ exports.getCart = (req, res, nxt) => {
   req.user
     .populate('cart.items.productId')
     .execPopulate()
-    .then(user => {
+    .then((user) => {
       const products = user.cart.items;
       // console.log("-> cart product list");
       res.render('shop/cart', {
         pageTitle: 'Your Cart',
         path: '/cart',
-        products: products
+        products: products,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -130,12 +130,12 @@ exports.postCart = (req, res, nxt) => {
   const prodId = req.body.productId;
   productModel
     .findById(prodId)
-    .then(product => {
+    .then((product) => {
       console.log('-> product added to cart:', product._id);
       req.user.addToCart(product);
       res.redirect('/cart');
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -147,11 +147,11 @@ exports.postCartDeleteProduct = (req, res, nxt) => {
   const prodId = req.body.productId;
   req.user
     .removeFromCart(prodId)
-    .then(result => {
+    .then((result) => {
       console.log('-> removing product from cart:', prodId);
       res.redirect('/cart');
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -163,20 +163,20 @@ exports.getCheckout = (req, res, nxt) => {
   req.user
     .populate('cart.items.productId')
     .execPopulate()
-    .then(user => {
+    .then((user) => {
       const products = user.cart.items;
       let total = 0;
-      products.forEach(item => {
+      products.forEach((item) => {
         total += item.qnt * item.productId.price;
       });
       res.render('shop/checkout', {
         pageTitle: 'Checkout',
         path: '/checkout',
         products: products,
-        totalSum: total
+        totalSum: total,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -195,30 +195,30 @@ exports.postOrder = (req, res, nxt) => {
   req.user
     .populate('cart.items.productId')
     .execPopulate()
-    .then(user => {
-      user.cart.items.forEach(p => {
+    .then((user) => {
+      user.cart.items.forEach((p) => {
         total += p.qnt * p.productId.price;
       });
 
-      const products = user.cart.items.map(i => {
+      const products = user.cart.items.map((i) => {
         return { qnt: i.qnt, productData: { ...i.productId._doc } };
       });
       const order = new orderModel({
         user: {
           name: req.user.email,
-          userId: req.user
+          userId: req.user,
         },
-        products: products
+        products: products,
       });
       return order.save();
     })
-    .then(res => {
+    .then((res) => {
       const charge = stripe.charges.create({
         amount: total * 100,
         currency: 'usd',
         description: 'test order',
         source: token,
-        metadata: { order_id: res._id.toString() }
+        metadata: { order_id: res._id.toString() },
       });
     })
     .then(() => {
@@ -227,7 +227,7 @@ exports.postOrder = (req, res, nxt) => {
     .then(() => {
       res.redirect('/orders');
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -238,14 +238,14 @@ exports.getOrders = (req, res, nxt) => {
   console.log('==> shopController: getOrders');
   orderModel
     .find({ 'user.userId': req.user._id })
-    .then(orders => {
+    .then((orders) => {
       res.render('shop/orders', {
         pageTitle: 'Your Orders',
         path: '/orders',
-        orders: orders
+        orders: orders,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -258,7 +258,7 @@ exports.getInvoice = (req, res, nxt) => {
 
   orderModel
     .findById(orderId)
-    .then(order => {
+    .then((order) => {
       if (!order) {
         console.log('-> order not found.');
         return nxt(new Error('No order found.'));
@@ -274,7 +274,10 @@ exports.getInvoice = (req, res, nxt) => {
       // creating a new pdf document
       const pdfDoc = new PDFDocument();
       res.setHeader('Content-Type', 'application/pdf');
-      res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"');
+      res.setHeader(
+        'Content-Disposition',
+        'inline; filename="' + invoiceName + '"'
+      );
       pdfDoc.pipe(fs.createWriteStream(invoicePath));
       pdfDoc.pipe(res);
 
@@ -284,15 +287,27 @@ exports.getInvoice = (req, res, nxt) => {
         .text('Invoice #' + order._id);
       pdfDoc.fontSize(10).text('---------------------------------------------');
       let totalPrice = 0;
-      order.products.forEach(prod => {
+      order.products.forEach((prod) => {
         totalPrice += prod.qnt * prod.productData.price;
         pdfDoc.fontSize(18).text(prod.productData.title);
-        pdfDoc.fontSize(14).text('Price: $' + prod.productData.price + '(x' + prod.qnt + ') = ' + '$' + prod.productData.price * prod.qnt);
+        pdfDoc
+          .fontSize(14)
+          .text(
+            'Price: $' +
+              prod.productData.price +
+              '(x' +
+              prod.qnt +
+              ') = ' +
+              '$' +
+              prod.productData.price * prod.qnt
+          );
         pdfDoc.fontSize(9).text(prod.productData.description);
-        pdfDoc.fontSize(10).text('---------------------------------------------');
+        pdfDoc
+          .fontSize(10)
+          .text('---------------------------------------------');
       });
       pdfDoc.fontSize(16).text('Total: $' + totalPrice);
       pdfDoc.end();
     })
-    .catch(err => nxt(err));
+    .catch((err) => nxt(err));
 };

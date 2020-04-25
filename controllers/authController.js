@@ -15,8 +15,8 @@ const userModel = require('../models/userModel');
 const transporter = nodemailer.createTransport(
   sendgridTransport({
     auth: {
-      api_key: process.env.SENDGRID_APIKEY
-    }
+      api_key: process.env.SENDGRID_APIKEY,
+    },
   })
 );
 
@@ -31,7 +31,7 @@ exports.getLogin = (req, res, nxt) => {
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
-    errorMessage: message
+    errorMessage: message,
   });
 };
 
@@ -48,21 +48,21 @@ exports.postLogin = (req, res, nxt) => {
       path: '/login',
       pageTitle: 'Login',
       errorMessage: errors.array()[0].msg,
-      oldInput: { email: email }
+      oldInput: { email: email },
     });
   }
 
   userModel
     .findOne({ email: email })
-    .then(user => {
+    .then((user) => {
       if (user !== null) {
         bcrypt
           .compare(password, user.password)
-          .then(match => {
+          .then((match) => {
             if (match) {
               req.session.isLoggedIn = true;
               req.session.user = user;
-              req.session.save(err => {
+              req.session.save((err) => {
                 console.log('-> registering req.session.user:', user);
                 res.redirect('/');
               });
@@ -71,7 +71,7 @@ exports.postLogin = (req, res, nxt) => {
               res.redirect('/login');
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
             res.redirect('/login');
           });
@@ -83,7 +83,7 @@ exports.postLogin = (req, res, nxt) => {
         res.redirect('/login');
       }
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -92,7 +92,7 @@ exports.postLogin = (req, res, nxt) => {
 
 exports.postLogout = (req, res, nxt) => {
   console.log('==> authController: postLogout');
-  req.session.destroy(err => {
+  req.session.destroy((err) => {
     console.log('->', err);
     res.redirect('/');
   });
@@ -110,7 +110,7 @@ exports.getSignup = (req, res, nxt) => {
     path: '/signup',
     pageTitle: 'Sign-Up',
     isAuth: req.session.isLoggedIn,
-    errorMessage: message
+    errorMessage: message,
   });
 };
 
@@ -131,14 +131,14 @@ exports.postSignup = (req, res, nxt) => {
       oldInput: {
         email: email,
         password: password,
-        confirmPassword: confirmPassword
-      }
+        confirmPassword: confirmPassword,
+      },
     });
   }
 
   userModel
     .findOne({ email: email })
-    .then(user => {
+    .then((user) => {
       // controller validation:
       if (user) {
         console.log('-> email already exists');
@@ -153,31 +153,31 @@ exports.postSignup = (req, res, nxt) => {
 
       return bcrypt
         .hash(password, 12)
-        .then(hashedPassword => {
+        .then((hashedPassword) => {
           const newUser = new userModel({
             email: email,
             password: hashedPassword,
-            cart: { items: [] }
+            cart: { items: [] },
           });
           return newUser.save();
         })
-        .then(result => {
+        .then((result) => {
           console.log('-> signup successfull, sending email...');
           res.redirect('/login');
           return transporter.sendMail({
             to: email,
             from: 'nodejs_app@nodejs.app',
             subject: 'Sign up succeeded!',
-            html: '<h1>  You successfully signed up! </h1>'
+            html: '<h1>  You successfully signed up! </h1>',
           });
         })
-        .catch(err => {
+        .catch((err) => {
           const error = new Error(err);
           error.httpStatusCode = 500;
           return nxt(error);
         });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -196,7 +196,7 @@ exports.getReset = (req, res, nxt) => {
     path: '/reset',
     pageTitle: 'Password Reset',
     isAuth: req.session.isLoggedIn,
-    errorMessage: message
+    errorMessage: message,
   });
 };
 
@@ -211,7 +211,7 @@ exports.postReset = (req, res, nxt) => {
     const token = buffer.toString('hex');
     userModel
       .findOne({ email: req.body.email })
-      .then(user => {
+      .then((user) => {
         if (!user) {
           console.log('-> user not found');
           req.flash('error', 'No account found!');
@@ -222,7 +222,7 @@ exports.postReset = (req, res, nxt) => {
         user.resetTokenExpiration = Date.now() + 3600000;
         return user.save();
       })
-      .then(result => {
+      .then((result) => {
         console.log('-> sending reset link to:', req.body.email);
         res.redirect('/');
         transporter.sendMail({
@@ -232,10 +232,10 @@ exports.postReset = (req, res, nxt) => {
           html: `
             <p>You Requested a Password Reset</p>
             <p><a href="http://localhost:3000/reset/${token}"> Click here to set a new password</a></p>
-          `
+          `,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         const error = new Error(err);
         error.httpStatusCode = 500;
         return nxt(error);
@@ -248,7 +248,7 @@ exports.getNewPassword = (req, res, nxt) => {
   const token = req.params.token;
   userModel
     .findOne({ resetToken: token, resetTokenExpiration: { $gt: Date.now() } })
-    .then(user => {
+    .then((user) => {
       let message = req.flash('error');
       if (message.length > 0) {
         message = message[0];
@@ -261,10 +261,10 @@ exports.getNewPassword = (req, res, nxt) => {
         isAuth: req.session.isLoggedIn,
         errorMessage: message,
         userId: user._id.toString(),
-        passwordToken: token
+        passwordToken: token,
       });
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
@@ -282,22 +282,22 @@ exports.postNewPassword = (req, res, nxt) => {
     .findOne({
       resetToken: passwordToken,
       resetTokenExpiration: { $gt: Date.now() },
-      _id: userId
+      _id: userId,
     })
-    .then(user => {
+    .then((user) => {
       resetUser = user;
       return bcrypt.hash(newPassword, 12);
     })
-    .then(hashedPassword => {
+    .then((hashedPassword) => {
       resetUser.password = hashedPassword;
       resetUser.resetToken = undefined;
       resetUser.resetTokenExpiration = undefined;
       return resetUser.save();
     })
-    .then(result => {
+    .then((result) => {
       res.redirect('/login');
     })
-    .catch(err => {
+    .catch((err) => {
       const error = new Error(err);
       error.httpStatusCode = 500;
       return nxt(error);
